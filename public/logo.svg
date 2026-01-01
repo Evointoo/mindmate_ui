@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 60" fill="none">
+  <!-- Icon Group: aligned left vertically centered -->
+  <g transform="translate(20, 10)">
+     <path d="M20 36C20 36 35 28.5 35 15C35 8.92487 30.0751 4 24 4C20.5 4 17.5 5.5 15.5 8C13.5 5.5 10.5 4 7 4C0.924868 4 -4 8.92487 -4 15C-4 28.5 11 36 11 36" stroke="#22C55E" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="12" cy="15" r="2" fill="#22C55E" />
+    <circle cx="28" cy="15" r="2" fill="#22C55E" />
+    <circle cx="20" cy="24" r="2" fill="#22C55E" />
+    <path d="M12 15 L20 24 L28 15" stroke="#22C55E" stroke-width="1.5" stroke-opacity="0.6" />
+  </g>
+  
+  <!-- Text Group: aligned next to icon -->
+  <!-- Icon width roughly 40. Start text at 70 -->
+  <text x="70" y="38" font-family="'Inter', sans-serif" font-weight="700" font-size="28" fill="white" letter-spacing="-0.5">Mind<tspan fill="#22C55E">Mate</tspan></text>
+</svg>

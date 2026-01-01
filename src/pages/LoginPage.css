@@ -1,0 +1,202 @@
+.login-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.login-container {
+    width: 100%;
+    max-width: 480px;
+    padding: var(--spacing-lg);
+    position: relative;
+    z-index: 10;
+}
+
+.login-content {
+    padding: var(--spacing-3xl) var(--spacing-xl);
+    animation: fadeIn 0.8s ease;
+}
+
+.login-header {
+    text-align: center;
+    margin-bottom: var(--spacing-3xl);
+}
+
+.logo-container {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto var(--spacing-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--accent-subtle);
+    border-radius: var(--radius-xl);
+    animation: float 3s ease-in-out infinite;
+}
+
+.logo-icon {
+    color: var(--accent-primary);
+}
+
+.login-title {
+    font-size: var(--font-size-3xl);
+    font-weight: 700;
+    margin-bottom: var(--spacing-sm);
+    letter-spacing: -0.03em;
+}
+
+.login-subtitle {
+    font-size: var(--font-size-base);
+    color: var(--text-secondary);
+    max-width: 360px;
+    margin: 0 auto;
+    line-height: 1.5;
+}
+
+/* Google Sign-In Section */
+.google-signin-container {
+    text-align: center;
+}
+
+.signin-instruction {
+    font-size: var(--font-size-lg);
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-xl);
+    font-weight: 500;
+}
+
+.google-button-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-bottom: var(--spacing-2xl);
+}
+
+.features-list {
+    margin-top: var(--spacing-2xl);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.feature-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    text-align: left;
+}
+
+.feature-dot {
+    width: 6px;
+    height: 6px;
+    background: var(--accent-primary);
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+/* Phone Form */
+.phone-form {
+    width: 100%;
+}
+
+.form-title {
+    font-size: var(--font-size-xl);
+    font-weight: 600;
+    margin-bottom: var(--spacing-sm);
+    text-align: center;
+}
+
+.form-subtitle {
+    text-align: center;
+    color: var(--text-secondary);
+    margin-bottom: var(--spacing-xl);
+}
+
+.form-group {
+    margin-bottom: var(--spacing-lg);
+}
+
+.form-group label {
+    display: block;
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    margin-bottom: var(--spacing-sm);
+    color: var(--text-secondary);
+}
+
+.phone-input {
+    width: 100%;
+    font-size: var(--font-size-lg);
+    text-align: center;
+    letter-spacing: 0.05em;
+}
+
+/* Error Message */
+.error-message {
+    margin-top: var(--spacing-lg);
+    padding: var(--spacing-md);
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    border-radius: var(--radius-md);
+    text-align: center;
+}
+
+.error-message p {
+    color: #ef4444;
+    font-size: var(--font-size-sm);
+    margin: 0;
+}
+
+/* Footer */
+.login-footer {
+    margin-top: var(--spacing-2xl);
+    text-align: center;
+    font-size: var(--font-size-xs);
+}
+
+/* Background Gradients */
+.bg-gradient-1,
+.bg-gradient-2 {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.15;
+    pointer-events: none;
+}
+
+.bg-gradient-1 {
+    width: 400px;
+    height: 400px;
+    background: var(--accent-primary);
+    top: -200px;
+    right: -200px;
+    animation: float 8s ease-in-out infinite;
+}
+
+.bg-gradient-2 {
+    width: 300px;
+    height: 300px;
+    background: var(--accent-muted);
+    bottom: -150px;
+    left: -150px;
+    animation: float 10s ease-in-out infinite reverse;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+    .login-content {
+        padding: var(--spacing-2xl) var(--spacing-lg);
+    }
+
+    .login-title {
+        font-size: var(--font-size-2xl);
+    }
+
+    .login-subtitle {
+        font-size: var(--font-size-sm);
+    }
+}
