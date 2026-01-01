@@ -53,9 +53,18 @@ function OnboardingAssessment({ user, accessToken, onComplete }) {
         setSubmitting(true);
 
         try {
+            // Convert responses object to array format expected by backend
+            const responsesArray = Object.entries(responses).map(([questionId, answer]) => ({
+                question_id: parseInt(questionId),
+                answer: answer
+            }));
+
+            // Extract mood rating from question 10's response
+            const moodRatingValue = responses[10] || 5; // Default to 5 if not answered
+
             const response = await assessmentAPI.submitAssessment(user.id, {
-                responses,
-                mood_rating: moodRating,
+                responses: responsesArray,
+                mood_rating: moodRatingValue,
             });
 
             setResults(response.data);
