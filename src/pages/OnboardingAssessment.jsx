@@ -21,7 +21,38 @@ function OnboardingAssessment({ user, accessToken, onComplete }) {
     const fetchQuestions = async () => {
         try {
             const response = await assessmentAPI.getQuestions();
-            setQuestions(response.data);
+            console.debug('Assessment questions response:', response.data);
+
+            // Support either an array response or an object like { questions: [...] }
+            const raw = Array.isArray(response.data) ? response.data : response.data?.questions || [];
+
+            // Normalize question schema to what's expected by the UI
+            const normalized = raw.map((q) => {
+                const type = (q.question_type || '').toLowerCase();
+
+                // Map backend types to UI types
+                let question_type = 'multiple_choice';
+                if (type.includes('slider')) question_type = 'mood_slider';
+                else if (type.includes('choice') || type.includes('select')) question_type = 'multiple_choice';
+
+                // Normalize options to { label, value } objects when API returns string arrays
+                let options = null;
+                if (Array.isArray(q.options)) {
+                    if (q.options.length > 0 && typeof q.options[0] === 'string') {
+                        options = q.options.map((opt) => ({ label: opt, value: opt }));
+                    } else {
+                        options = q.options;
+                    }
+                }
+
+                return {
+                    ...q,
+                    question_type,
+                    options,
+                };
+            });
+
+            setQuestions(normalized);
         } catch (error) {
             console.error('Failed to fetch questions:', error);
         } finally {
@@ -205,28 +236,32 @@ function OnboardingAssessment({ user, accessToken, onComplete }) {
                             {/* Answer Options */}
                             {currentQuestion?.question_type === 'multiple_choice' ? (
                                 <div className="space-y-3 mb-8">
-                                    {currentQuestion.options.map((option, index) => (
-                                        <motion.button
-                                            key={index}
-                                            onClick={() => handleAnswer(option.value)}
-                                            className={`
+                                    {currentQuestion.options && currentQuestion.options.length > 0 ? (
+                                        (currentQuestion.options || []).map((option, index) => (
+                                            <motion.button
+                                                key={index}
+                                                onClick={() => handleAnswer(option.value)}
+                                                className={`
                         w-full p-4 rounded-lg border-2 text-left transition-all
                         ${responses[currentQuestion.question_id] === option.value
                                                     ? 'border-green-neon bg-green-neon/10'
                                                     : 'border-white/10 bg-white/5 hover:bg-white/8 hover:border-white/20'
                                                 }
                       `}
-                                            whileHover={{ x: 4 }}
-                                            whileTap={{ scale: 0.98 }}
-                                        >
-                                            <div className="flex items-center justify-between">
-                                                <span className="text-white font-medium">{option.label}</span>
-                                                {responses[currentQuestion.question_id] === option.value && (
-                                                    <CheckCircle size={20} className="text-green-neon" strokeWidth={1.5} />
-                                                )}
-                                            </div>
-                                        </motion.button>
-                                    ))}
+                                                whileHover={{ x: 4 }}
+                                                whileTap={{ scale: 0.98 }}
+                                            >
+                                                <div className="flex items-center justify-between">
+                                                    <span className="text-white font-medium">{option.label}</span>
+                                                    {responses[currentQuestion.question_id] === option.value && (
+                                                        <CheckCircle size={20} className="text-green-neon" strokeWidth={1.5} />
+                                                    )}
+                                                </div>
+                                            </motion.button>
+                                        ))
+                                    ) : (
+                                        <p className="text-white/60">No options available for this question.</p>
+                                    )}
                                 </div>
                             ) : currentQuestion?.question_type === 'mood_slider' ? (
                                 <div className="mb-8">
