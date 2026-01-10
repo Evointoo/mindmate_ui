@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { User, Bot } from 'lucide-react';
+import { User } from 'lucide-react';
 import PropTypes from 'prop-types';
 
 /**
@@ -26,13 +26,13 @@ const ChatBubble = ({ role, content, timestamp }) => {
         >
             {/* Avatar */}
             <div className={`
-        flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center
+        flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center overflow-hidden
         ${isUser ? 'bg-green-neon/20 border border-green-neon/30' : 'bg-white/5 border border-white/10'}
       `}>
                 {isUser ? (
                     <User size={16} className="text-green-neon" strokeWidth={1.5} />
                 ) : (
-                    <Bot size={16} className="text-white/60" strokeWidth={1.5} />
+                    <img src="/favicon.svg" alt="MindMate" className="w-5 h-5 object-contain" />
                 )}
             </div>
 

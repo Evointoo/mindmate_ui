@@ -12,8 +12,9 @@ import {
     SessionTimer,
     EndSessionModal, // Import the new modal
 } from '../components';
+import './VoiceTherapySession.css';
 
-function TherapySession({ user, accessToken, onEndSession }) {
+function VoiceTherapySession({ user, accessToken, onEndSession }) {
     // Session state
     const [sessionId, setSessionId] = useState(null);
     const [sessionTime, setSessionTime] = useState(0);
@@ -470,4 +471,4 @@ function TherapySession({ user, accessToken, onEndSession }) {
     );
 }
 
-export default TherapySession;
+export default VoiceTherapySession;
