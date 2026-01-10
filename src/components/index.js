@@ -5,5 +5,10 @@ export { default as ChatBubble } from './ChatBubble';
 export { default as EmergencyButton } from './EmergencyButton';
 export { default as CrisisModal } from './EmergencyButton'; // EmergencyButton exports CrisisModal
 export { default as SessionTimer } from './SessionTimer';
-export { default as AssessmentNotification } from './AssessmentNotification';
 export { default as EndSessionModal } from './EndSessionModal';
+export { default as InsightCard } from './InsightCard';
+export { default as ExerciseCard } from './ExerciseCard';
+export { default as AssessmentNotification } from './AssessmentNotification';
+export { default as ModeSelectionModal } from './ModeSelectionModal';
+export { default as VoiceRecordingModal } from './VoiceRecordingModal';
+export { default as ChatInputBox } from './ChatInputBox';

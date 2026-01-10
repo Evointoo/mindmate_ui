@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import LoginPage from './pages/LoginPage';
 import OnboardingAssessment from './pages/OnboardingAssessment';
-import TherapySession from './pages/TherapySession';
+import VoiceTherapySession from './pages/VoiceTherapySession';
+import ChatTherapySession from './pages/ChatTherapySession';
 import Dashboard from './pages/Dashboard';
 import MoodAnalytics from './pages/MoodAnalytics';
 import GroundingExercises from './pages/GroundingExercises';
@@ -22,6 +23,7 @@ function App() {
     const [user, setUser] = useState(null);
     const [accessToken, setAccessToken] = useState(null);
     const [assessmentResult, setAssessmentResult] = useState(null);
+    const [sessionMode, setSessionMode] = useState(null); // 'voice' | 'chat'
 
     useEffect(() => {
         // Check if user is already logged in
@@ -72,11 +74,13 @@ function App() {
         setAppState(APP_STATES.LOGIN);
     };
 
-    const startSession = () => {
+    const startSession = (mode) => {
+        setSessionMode(mode); // 'voice' or 'chat'
         setAppState(APP_STATES.SESSION);
     };
 
     const endSession = () => {
+        setSessionMode(null); // Reset mode on session end
         setAppState(APP_STATES.DASHBOARD);
     };
 
@@ -115,12 +119,21 @@ function App() {
                 )}
 
                 {appState === APP_STATES.SESSION && (
-                    <TherapySession
-                        user={user}
-                        accessToken={accessToken}
-                        onEndSession={endSession}
-                        assessmentResult={assessmentResult}
-                    />
+                    <>
+                        {sessionMode === 'voice' ? (
+                            <VoiceTherapySession
+                                user={user}
+                                accessToken={accessToken}
+                                onEndSession={endSession}
+                            />
+                        ) : sessionMode === 'chat' ? (
+                            <ChatTherapySession
+                                user={user}
+                                accessToken={accessToken}
+                                onEndSession={endSession}
+                            />
+                        ) : null}
+                    </>
                 )}
 
                 {appState === APP_STATES.ANALYTICS && (

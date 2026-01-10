@@ -2,13 +2,14 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Mic, TrendingUp, Heart, Calendar, LogOut, Shield, Wind, BarChart3 } from 'lucide-react';
 import { chatAPI } from '../utils/api';
-import { EmergencyButton, CrisisModal } from '../components';
+import { EmergencyButton, CrisisModal, ModeSelectionModal } from '../components';
 
 function Dashboard({ user, onStartSession, onLogout, onNavigate }) {
     const [sessions, setSessions] = useState([]);
     const [loading, setLoading] = useState(true);
     const [currentPage, setCurrentPage] = useState(1);
     const [showCrisisModal, setShowCrisisModal] = useState(false);
+    const [showModeSelection, setShowModeSelection] = useState(false);
     const sessionsPerPage = 5;
 
     useEffect(() => {
@@ -98,11 +99,11 @@ function Dashboard({ user, onStartSession, onLogout, onNavigate }) {
                             </p>
 
                             <button
-                                onClick={onStartSession}
+                                onClick={() => setShowModeSelection(true)}
                                 className="btn-primary flex items-center gap-3"
                             >
                                 <Mic size={20} strokeWidth={1.5} />
-                                <span>Start Voice Session</span>
+                                <span>Start Therapy Session</span>
                             </button>
 
                             <div className="flex items-center gap-6 mt-6 text-sm text-white/40">
@@ -329,7 +330,7 @@ function Dashboard({ user, onStartSession, onLogout, onNavigate }) {
                             <h4 className="text-lg font-semibold text-white mb-2">No sessions yet</h4>
                             <p className="text-white/40 mb-6">Start your first therapy session to begin your journey</p>
                             <button
-                                onClick={onStartSession}
+                                onClick={() => setShowModeSelection(true)}
                                 className="btn-primary"
                             >
                                 Start Session
@@ -363,6 +364,16 @@ function Dashboard({ user, onStartSession, onLogout, onNavigate }) {
             {/* Emergency button */}
             <EmergencyButton onClick={() => setShowCrisisModal(true)} />
             <CrisisModal isOpen={showCrisisModal} onClose={() => setShowCrisisModal(false)} />
+
+            {/* Mode Selection Modal */}
+            <ModeSelectionModal
+                isOpen={showModeSelection}
+                onSelectMode={(mode) => {
+                    setShowModeSelection(false);
+                    onStartSession(mode); // Pass selected mode to App.jsx
+                }}
+                onClose={() => setShowModeSelection(false)}
+            />
         </div>
     );
 }
