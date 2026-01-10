@@ -189,13 +189,13 @@ function ChatTherapySession({ user, accessToken, onEndSession }) {
 
     // Main chat interface
     return (
-        <div className="min-h-screen bg-black-primary flex flex-col">
+        <div className="min-h-screen bg-black-primary flex flex-col relative">
             {/* Background */}
             <div className="absolute inset-0 bg-gradient-to-b from-black-primary via-black-secondary to-black-tertiary z-0" />
 
             {/* Header */}
             <motion.header
-                className="relative z-20 px-6 py-6 flex items-start justify-between glass-panel border-b border-white/10"
+                className="sticky top-0 z-20 px-6 py-6 flex items-start justify-between glass-panel border-b border-white/10 backdrop-blur-xl bg-black-primary/80"
                 initial={{ y: -20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
             >
@@ -221,7 +221,7 @@ function ChatTherapySession({ user, accessToken, onEndSession }) {
             </motion.header>
 
             {/* Messages Area */}
-            <div className="flex-1 overflow-y-auto px-6 py-6 relative z-10">
+            <div className="flex-1 overflow-y-auto px-6 py-6 relative z-10 bg-black-secondary/30">
                 <div className="max-w-4xl mx-auto space-y-6 pb-6">
                     {messages.map((message, index) => (
                         <ChatBubble
@@ -255,7 +255,7 @@ function ChatTherapySession({ user, accessToken, onEndSession }) {
             </div>
 
             {/* Input Box - Fixed at bottom */}
-            <div className="relative z-20">
+            <div className="sticky bottom-0 z-20 backdrop-blur-xl bg-black-primary/80 border-t border-white/10">
                 <ChatInputBox
                     value={inputText}
                     onChange={setInputText}

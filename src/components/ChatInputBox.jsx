@@ -36,7 +36,7 @@ const ChatInputBox = ({ value, onChange, onSend, onVoiceClick, disabled, placeho
     };
 
     return (
-        <div className="glass-panel border-t border-white/10 p-4">
+        <div className="p-4">
             <div className="max-w-4xl mx-auto flex items-end gap-3">
                 {/* Microphone Button */}
                 <button
@@ -94,7 +94,7 @@ const ChatInputBox = ({ value, onChange, onSend, onVoiceClick, disabled, placeho
             {/* Hint text */}
             <div className="max-w-4xl mx-auto mt-2 text-center">
                 <p className="text-white/30 text-xs">
-                    Press Enter to send • Shift+Enter for new line • Click 🎤 to record voice
+                    Press Enter to send • Shift+Enter for new line • Click mic to record voice
                 </p>
             </div>
         </div>
