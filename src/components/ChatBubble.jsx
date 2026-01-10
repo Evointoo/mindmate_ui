@@ -39,19 +39,19 @@ const ChatBubble = ({ role, content, timestamp }) => {
             {/* Message content */}
             <div className={`flex-1 ${isUser ? 'text-right' : 'text-left'}`}>
                 <div className={`
-          inline-block max-w-[85%] p-3 rounded-lg
+          inline-block max-w-[85%] p-4 rounded-xl backdrop-blur-md
           ${isUser
-                        ? 'bg-green-neon/10 border border-green-neon/20'
-                        : 'bg-white/5 border border-white/10'
+                        ? 'bg-green-neon/30 border-2 border-green-neon/50 shadow-lg shadow-green-neon/20'
+                        : 'bg-white/15 border-2 border-white/30 shadow-lg'
                     }
         `}>
-                    <p className={`text-sm leading-relaxed ${isUser ? 'text-white' : 'text-white/90'}`}>
+                    <p className={`text-base leading-relaxed ${isUser ? 'text-white font-semibold' : 'text-white font-medium'}`}>
                         {content}
                     </p>
                 </div>
 
                 {timestamp && (
-                    <p className="text-xs text-white/30 mt-1">
+                    <p className="text-xs text-white/50 mt-2 font-medium">
                         {formatTime(timestamp)}
                     </p>
                 )}

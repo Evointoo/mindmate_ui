@@ -195,23 +195,25 @@ function ChatTherapySession({ user, accessToken, onEndSession }) {
 
             {/* Header */}
             <motion.header
-                className="sticky top-0 z-20 px-6 py-6 flex items-start justify-between glass-panel border-b border-white/10 backdrop-blur-xl bg-black-primary/80"
+                className="sticky top-0 z-20 px-6 py-4 flex items-center justify-between glass-panel border-b border-white/10 backdrop-blur-xl bg-black-primary/80 relative"
                 initial={{ y: -20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
             >
-                <div>
-                    <div className="flex items-center gap-3 mb-1">
-                        <img src="/logo.svg" alt="MindMate" className="h-10 w-auto object-contain" />
-                    </div>
-                    <div className="flex items-center gap-4 text-sm text-white/40 pl-5">
-                        <SessionTimer seconds={sessionTime} />
-                        <span>•</span>
-                        <span>Mood: {moodBefore}/10</span>
-                        <span>•</span>
-                        <span className="text-green-neon">Chat Mode</span>
-                    </div>
+                {/* Left: Logo */}
+                <div className="flex items-center">
+                    <img src="/logo.svg" alt="MindMate" className="h-10 w-auto object-contain" />
                 </div>
 
+                {/* Center: Session Info (Absolutely centered) */}
+                <div className="absolute left-1/2 transform -translate-x-1/2 flex items-center gap-4 text-sm text-white">
+                    <SessionTimer seconds={sessionTime} />
+                    <span className="text-white/40">•</span>
+                    <span>Mood: {moodBefore}/10</span>
+                    <span className="text-white/40">•</span>
+                    <span className="text-green-neon font-semibold">Chat Mode</span>
+                </div>
+
+                {/* Right: End Session */}
                 <button
                     onClick={handleEndSessionClick}
                     className="text-red-400 hover:text-red-300 text-sm font-medium transition-colors"
@@ -221,7 +223,7 @@ function ChatTherapySession({ user, accessToken, onEndSession }) {
             </motion.header>
 
             {/* Messages Area */}
-            <div className="flex-1 overflow-y-auto px-6 py-6 relative z-10 bg-black-secondary/30">
+            <div className="flex-1 overflow-y-auto px-6 py-6 relative z-10 backdrop-blur-sm bg-black-secondary/50">
                 <div className="max-w-4xl mx-auto space-y-6 pb-6">
                     {messages.map((message, index) => (
                         <ChatBubble

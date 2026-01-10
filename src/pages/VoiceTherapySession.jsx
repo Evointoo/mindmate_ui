@@ -331,35 +331,39 @@ function VoiceTherapySession({ user, accessToken, onEndSession }) {
 
             {/* Header */}
             <motion.header
-                className="relative z-20 px-6 py-6 flex items-start justify-between"
+                className="relative z-20 px-6 py-4 flex items-center justify-between"
                 initial={{ y: -20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
             >
-                <div>
-                    <div className="flex items-center gap-3 mb-1">
-                        <img src="/logo.svg" alt="MindMate" className="h-10 w-auto object-contain" />
-                    </div>
-                    <div className="flex items-center gap-4 text-sm text-white/40 pl-5">
-                        <SessionTimer seconds={sessionTime} />
-                        <span>•</span>
-                        <span>Mood: {moodBefore}/10</span>
-                    </div>
+                {/* Left: Logo */}
+                <div className="flex items-center">
+                    <img src="/logo.svg" alt="MindMate" className="h-10 w-auto object-contain" />
                 </div>
 
-                <div className="flex flex-col items-end gap-2">
+                {/* Center: Session Info (Absolutely centered) */}
+                <div className="absolute left-1/2 transform -translate-x-1/2 flex items-center gap-4 text-sm text-white">
+                    <SessionTimer seconds={sessionTime} />
+                    <span className="text-white/40">•</span>
+                    <span>Mood: {moodBefore}/10</span>
+                    <span className="text-white/40">•</span>
+                    <span className="text-green-neon font-semibold">Voice Mode</span>
+                </div>
+
+                {/* Right: Actions */}
+                <div className="flex items-center gap-4">
+                    <button
+                        onClick={() => setShowTranscript(!showTranscript)}
+                        className="text-white/40 hover:text-white/60 text-xs flex items-center gap-1 transition-colors"
+                    >
+                        <MessageSquare size={12} className="text-green-neon" strokeWidth={1.5} />
+                        {showTranscript ? 'Hide' : 'Show'} Transcript
+                    </button>
+
                     <button
                         onClick={handleEndSessionClick}
                         className="text-red-400 hover:text-red-300 text-sm font-medium transition-colors"
                     >
                         End Session
-                    </button>
-
-                    <button
-                        onClick={() => setShowTranscript(!showTranscript)}
-                        className="text-white/40 hover:text-white/60 text-xs flex items-center gap-1 transition-colors mt-2"
-                    >
-                        <MessageSquare size={12} className="text-green-neon" strokeWidth={1.5} />
-                        {showTranscript ? 'Hide Transcript' : 'Show Transcript'}
                     </button>
                 </div>
             </motion.header>

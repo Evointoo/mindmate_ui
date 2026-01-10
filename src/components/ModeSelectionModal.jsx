@@ -61,46 +61,46 @@ const ModeSelectionModal = ({ isOpen, onSelectMode, onClose }) => {
                             <motion.button
                                 onClick={() => handleModeSelect('voice')}
                                 onKeyDown={(e) => handleKeyDown(e, 'voice')}
-                                className="group relative p-8 rounded-2xl border-2 border-white/10 bg-white/5 hover:bg-white/10 hover:border-green-neon/50 transition-all duration-300 text-left focus:outline-none focus:ring-2 focus:ring-green-neon/50"
+                                className="group relative p-8 rounded-2xl border-2 border-green-neon/30 bg-gradient-to-br from-green-neon/20 to-green-dark/20 hover:from-green-neon/30 hover:to-green-dark/30 hover:border-green-neon/60 backdrop-blur-md transition-all duration-300 text-center focus:outline-none focus:ring-2 focus:ring-green-neon/50 shadow-lg hover:shadow-green-neon/30"
                                 whileHover={{ scale: 1.02 }}
                                 whileTap={{ scale: 0.98 }}
                                 tabIndex={0}
                             >
-                                {/* Icon */}
-                                <div className="inline-flex items-center justify-center w-16 h-16 mb-4 bg-green-neon/10 rounded-2xl border border-green-neon/20 group-hover:bg-green-neon/20 transition-colors">
-                                    <Mic size={32} className="text-green-neon" strokeWidth={1.5} />
+                                {/* Icon - Centered */}
+                                <div className="flex items-center justify-center w-20 h-20 mx-auto mb-4 bg-green-neon/30 rounded-2xl border-2 border-green-neon/50 group-hover:bg-green-neon/40 group-hover:border-green-neon/70 transition-all shadow-lg shadow-green-neon/30">
+                                    <Mic size={40} className="text-green-neon" strokeWidth={2} />
                                 </div>
 
                                 {/* Title */}
-                                <h3 className="text-2xl font-semibold text-white mb-3">
+                                <h3 className="text-2xl font-bold text-white mb-3">
                                     Voice-Based
                                 </h3>
 
                                 {/* Description */}
-                                <p className="text-white/60 text-sm leading-relaxed mb-4">
+                                <p className="text-white/80 text-sm leading-relaxed mb-4 font-medium">
                                     Speak freely and naturally. I'll listen and respond with voice,
                                     creating a conversational therapy experience.
                                 </p>
 
                                 {/* Features */}
-                                <ul className="space-y-2 text-xs text-white/50">
-                                    <li className="flex items-center gap-2">
-                                        <span className="w-1 h-1 rounded-full bg-green-neon/50"></span>
+                                <ul className="space-y-2 text-sm text-white/70">
+                                    <li className="flex items-center justify-center gap-2">
+                                        <span className="w-1.5 h-1.5 rounded-full bg-green-neon"></span>
                                         Hands-free conversation
                                     </li>
-                                    <li className="flex items-center gap-2">
-                                        <span className="w-1 h-1 rounded-full bg-green-neon/50"></span>
+                                    <li className="flex items-center justify-center gap-2">
+                                        <span className="w-1.5 h-1.5 rounded-full bg-green-neon"></span>
                                         Real-time voice responses
                                     </li>
-                                    <li className="flex items-center gap-2">
-                                        <span className="w-1 h-1 rounded-full bg-green-neon/50"></span>
+                                    <li className="flex items-center justify-center gap-2">
+                                        <span className="w-1.5 h-1.5 rounded-full bg-green-neon"></span>
                                         Natural, flowing dialogue
                                     </li>
                                 </ul>
 
                                 {/* Hover indicator */}
                                 <div className="absolute bottom-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                                    <span className="text-green-neon text-sm font-medium">Select →</span>
+                                    <span className="text-green-neon text-sm font-bold">Select →</span>
                                 </div>
                             </motion.button>
 
@@ -108,46 +108,46 @@ const ModeSelectionModal = ({ isOpen, onSelectMode, onClose }) => {
                             <motion.button
                                 onClick={() => handleModeSelect('chat')}
                                 onKeyDown={(e) => handleKeyDown(e, 'chat')}
-                                className="group relative p-8 rounded-2xl border-2 border-white/10 bg-white/5 hover:bg-white/10 hover:border-green-neon/50 transition-all duration-300 text-left focus:outline-none focus:ring-2 focus:ring-green-neon/50"
+                                className="group relative p-8 rounded-2xl border-2 border-green-neon/30 bg-gradient-to-br from-green-neon/20 to-green-dark/20 hover:from-green-neon/30 hover:to-green-dark/30 hover:border-green-neon/60 backdrop-blur-md transition-all duration-300 text-center focus:outline-none focus:ring-2 focus:ring-green-neon/50 shadow-lg hover:shadow-green-neon/30"
                                 whileHover={{ scale: 1.02 }}
                                 whileTap={{ scale: 0.98 }}
                                 tabIndex={0}
                             >
-                                {/* Icon */}
-                                <div className="inline-flex items-center justify-center w-16 h-16 mb-4 bg-green-neon/10 rounded-2xl border border-green-neon/20 group-hover:bg-green-neon/20 transition-colors">
-                                    <MessageSquare size={32} className="text-green-neon" strokeWidth={1.5} />
+                                {/* Icon - Centered */}
+                                <div className="flex items-center justify-center w-20 h-20 mx-auto mb-4 bg-green-neon/30 rounded-2xl border-2 border-green-neon/50 group-hover:bg-green-neon/40 group-hover:border-green-neon/70 transition-all shadow-lg shadow-green-neon/30">
+                                    <MessageSquare size={40} className="text-green-neon" strokeWidth={2} />
                                 </div>
 
                                 {/* Title */}
-                                <h3 className="text-2xl font-semibold text-white mb-3">
+                                <h3 className="text-2xl font-bold text-white mb-3">
                                     Chat-Based
                                 </h3>
 
                                 {/* Description */}
-                                <p className="text-white/60 text-sm leading-relaxed mb-4">
+                                <p className="text-white/80 text-sm leading-relaxed mb-4 font-medium">
                                     Type your thoughts or record voice messages. Review and edit
                                     before sending for a more controlled experience.
                                 </p>
 
                                 {/* Features */}
-                                <ul className="space-y-2 text-xs text-white/50">
-                                    <li className="flex items-center gap-2">
-                                        <span className="w-1 h-1 rounded-full bg-green-neon/50"></span>
+                                <ul className="space-y-2 text-sm text-white/70">
+                                    <li className="flex items-center justify-center gap-2">
+                                        <span className="w-1.5 h-1.5 rounded-full bg-green-neon"></span>
                                         Text or voice input options
                                     </li>
-                                    <li className="flex items-center gap-2">
-                                        <span className="w-1 h-1 rounded-full bg-green-neon/50"></span>
+                                    <li className="flex items-center justify-center gap-2">
+                                        <span className="w-1.5 h-1.5 rounded-full bg-green-neon"></span>
                                         Edit messages before sending
                                     </li>
-                                    <li className="flex items-center gap-2">
-                                        <span className="w-1 h-1 rounded-full bg-green-neon/50"></span>
+                                    <li className="flex items-center justify-center gap-2">
+                                        <span className="w-1.5 h-1.5 rounded-full bg-green-neon"></span>
                                         Full conversation history
                                     </li>
                                 </ul>
 
                                 {/* Hover indicator */}
                                 <div className="absolute bottom-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                                    <span className="text-green-neon text-sm font-medium">Select →</span>
+                                    <span className="text-green-neon text-sm font-bold">Select →</span>
                                 </div>
                             </motion.button>
                         </div>
