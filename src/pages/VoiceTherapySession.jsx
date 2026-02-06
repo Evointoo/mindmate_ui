@@ -220,13 +220,64 @@ function VoiceTherapySession({ user, accessToken, onEndSession }) {
         }
     };
 
-    // Text-to-speech
+    // Text-to-speech using browser with soft, friendly Indian voice
     const speakText = (text, onEnd) => {
         if ('speechSynthesis' in window) {
             setIsSpeaking(true);
             setStatusText('MindMate is speaking...');
 
-            // Remove emojis for speech using regex
+            const textWithoutEmojis = text
+                .replace(/([\u2700-\u27BF]|[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2011-\u26FF]|\uD83E[\uDD10-\uDDFF])/g, '')
+                .replace(/\s+/g, ' ')
+                .trim();
+
+            const utterance = new SpeechSynthesisUtterance(textWithoutEmojis);
+
+            // Try to find an Indian English voice
+            const voices = window.speechSynthesis.getVoices();
+            const indianVoice = voices.find(voice =>
+                voice.lang.includes('en-IN') && voice.name.toLowerCase().includes('female')
+            ) || voices.find(voice =>
+                voice.lang.includes('en-IN')
+            ) || voices.find(voice =>
+                voice.lang.includes('en') && voice.name.toLowerCase().includes('female')
+            );
+
+            if (indianVoice) {
+                utterance.voice = indianVoice;
+                console.log('🎤 Using voice:', indianVoice.name);
+            }
+
+            // Soft, friendly voice settings
+            utterance.lang = 'en-IN';
+            utterance.rate = 0.85;  // Slower, more relaxed pace
+            utterance.pitch = 1.15; // Slightly higher, friendlier pitch
+            utterance.volume = 0.9; // Slightly softer volume
+
+            utterance.onend = () => {
+                setIsSpeaking(false);
+                setStatusText('');
+                if (onEnd) onEnd();
+            };
+
+            utterance.onerror = (error) => {
+                console.error('Speech synthesis error:', error);
+                setIsSpeaking(false);
+                setStatusText('');
+            };
+
+            window.speechSynthesis.speak(utterance);
+        } else {
+            console.error('Speech synthesis not supported');
+            setIsSpeaking(false);
+            setStatusText('');
+            if (onEnd) onEnd();
+        }
+    };
+
+    // Fallback to browser TTS if ElevenLabs fails
+    const fallbackToBrowserTTS = (text, onEnd) => {
+        if ('speechSynthesis' in window) {
             const textWithoutEmojis = text
                 .replace(/([\u2700-\u27BF]|[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2011-\u26FF]|\uD83E[\uDD10-\uDDFF])/g, '')
                 .replace(/\s+/g, ' ')

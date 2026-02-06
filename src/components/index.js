@@ -12,3 +12,7 @@ export { default as AssessmentNotification } from './AssessmentNotification';
 export { default as ModeSelectionModal } from './ModeSelectionModal';
 export { default as VoiceRecordingModal } from './VoiceRecordingModal';
 export { default as ChatInputBox } from './ChatInputBox';
+export { default as Layout } from './Layout';
+export { default as Sidebar } from './Sidebar';
+export { default as TabNavigation } from './TabNavigation';
+export { default as TopBar } from './TopBar';
