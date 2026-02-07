@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Wind, Eye, Heart, Zap, X, Star } from 'lucide-react';
+import { X, Wind, Eye, Heart, Zap, Star } from 'lucide-react';
 import { MoodSlider } from '../components';
 
-function GroundingExercises({ onBack }) {
+function GroundingExercises() {
     const [activeExercise, setActiveExercise] = useState(null);
     const [exerciseStep, setExerciseStep] = useState(0);
     const [breathCount, setBreathCount] = useState(0);
@@ -206,26 +206,21 @@ function GroundingExercises({ onBack }) {
     );
 
     return (
-        <div className="min-h-screen bg-black-primary">
-            {/* Header */}
-            <motion.header
-                className="glass-panel border-b"
-                initial={{ y: -20, opacity: 0 }}
-                animate={{ opacity: 1, y: 0 }}
-            >
-                <div className="max-w-7xl mx-auto px-6 py-4">
-                    <button
-                        onClick={activeExercise ? () => setActiveExercise(null) : onBack}
-                        className="btn-ghost flex items-center gap-2"
-                    >
-                        <ArrowLeft size={20} strokeWidth={1.5} />
-                        <span>{activeExercise ? 'Exit Exercise' : 'Back to Dashboard'}</span>
-                    </button>
-                </div>
-            </motion.header>
+        <div className="min-h-screen bg-black-primary p-6">
+            {/* Exit Button (when in exercise) */}
+            {activeExercise && (
+                <motion.button
+                    onClick={() => setActiveExercise(null)}
+                    className="fixed top-6 right-6 z-50 p-3 glass-panel rounded-full hover:bg-white/10 transition-colors"
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                >
+                    <X size={24} className="text-white" strokeWidth={1.5} />
+                </motion.button>
+            )}
 
             {/* Main Content */}
-            <main className="max-w-7xl mx-auto p-6">
+            <main className="max-w-7xl mx-auto">
                 {!activeExercise ? (
                     <>
                         {/* Title */}

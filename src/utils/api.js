@@ -74,7 +74,7 @@ export const chatAPI = {
     endSession: (userId, sessionId, moodAfter) =>
         api.post(`/api/chat/end-session?user_id=${userId}`, { session_id: sessionId, mood_after: moodAfter }),
     getSessions: (userId) => api.get(`/api/chat/sessions/${userId}`),
-    getSessionHistory: (userId, sessionId) =>
+    getSessionHistory: (sessionId, userId) =>
         api.get(`/api/chat/session/${sessionId}/history?user_id=${userId}`),
 };
 

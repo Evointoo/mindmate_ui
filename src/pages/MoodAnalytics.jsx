@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowLeft, TrendingUp, TrendingDown, Download, Calendar } from 'lucide-react';
+import { TrendingUp, TrendingDown, Download, Calendar } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { chatAPI } from '../utils/api';
 
-function MoodAnalytics({ user, onBack }) {
+function MoodAnalytics({ user }) {
     const [moodData, setMoodData] = useState([]);
     const [loading, setLoading] = useState(true);
     const [stats, setStats] = useState({
@@ -85,22 +85,19 @@ function MoodAnalytics({ user, onBack }) {
     };
 
     return (
-        <div className="min-h-screen bg-black-primary">
-            {/* Header */}
-            <motion.header
-                className="glass-panel border-b"
-                initial={{ y: -20, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-            >
-                <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-                    <button
-                        onClick={onBack}
-                        className="btn-ghost flex items-center gap-2"
-                    >
-                        <ArrowLeft size={20} strokeWidth={1.5} />
-                        <span>Back to Dashboard</span>
-                    </button>
-
+        <div className="min-h-screen bg-black-primary p-6">
+            {/* Main Content */}
+            <main className="max-w-7xl mx-auto space-y-6">
+                {/* Title */}
+                <motion.div
+                    className="flex items-center justify-between"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                >
+                    <div>
+                        <h1 className="text-3xl font-bold text-white mb-2">Mood Analytics</h1>
+                        <p className="text-white/60">Track your emotional journey over time</p>
+                    </div>
                     <button
                         onClick={exportData}
                         disabled={moodData.length === 0}
@@ -109,18 +106,6 @@ function MoodAnalytics({ user, onBack }) {
                         <Download size={18} strokeWidth={1.5} />
                         <span>Export Data</span>
                     </button>
-                </div>
-            </motion.header>
-
-            {/* Main Content */}
-            <main className="max-w-7xl mx-auto p-6 space-y-6">
-                {/* Title */}
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                >
-                    <h1 className="text-3xl font-bold text-white mb-2">Mood Analytics</h1>
-                    <p className="text-white/60">Track your emotional journey over time</p>
                 </motion.div>
 
                 {/* Stats Cards */}

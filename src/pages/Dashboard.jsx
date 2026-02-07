@@ -1,14 +1,15 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Mic, TrendingUp, Heart, Calendar, LogOut, Shield, Wind, BarChart3 } from 'lucide-react';
+import { Mic, TrendingUp, Heart, Calendar, Shield, Wind, BarChart3 } from 'lucide-react';
 import { chatAPI } from '../utils/api';
-import { EmergencyButton, CrisisModal, ModeSelectionModal } from '../components';
+import { ModeSelectionModal } from '../components';
 
-function Dashboard({ user, onStartSession, onLogout, onNavigate }) {
+function Dashboard({ user, accessToken }) {
+    const navigate = useNavigate();
     const [sessions, setSessions] = useState([]);
     const [loading, setLoading] = useState(true);
     const [currentPage, setCurrentPage] = useState(1);
-    const [showCrisisModal, setShowCrisisModal] = useState(false);
     const [showModeSelection, setShowModeSelection] = useState(false);
     const sessionsPerPage = 5;
 
@@ -56,33 +57,6 @@ function Dashboard({ user, onStartSession, onLogout, onNavigate }) {
 
     return (
         <div className="min-h-screen bg-black-primary">
-            {/* Header */}
-            <motion.header
-                className="sticky top-0 z-50 backdrop-blur-xl bg-black-primary/40 border-b border-white/10"
-                initial={{ y: -20, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-            >
-                <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-                    <div className="flex items-center gap-4">
-                        <img src="/logo.svg" alt="MindMate" className="h-12 w-auto object-contain" />
-                        <div>
-                            {/* Logo text is in the SVG, but for dashboard we might want just icon + text separate or use the full logo. 
-                                 Let's use the full logo image instead of text to be consistent, OR keep the text and just use favicon/icon.
-                                 Let's use the full logo effectively. */}
-                            <p className="text-sm text-white/60">Welcome back, {user.email.split('@')[0]}</p>
-                        </div>
-                    </div>
-
-                    <button
-                        onClick={onLogout}
-                        className="btn-ghost flex items-center gap-2"
-                    >
-                        <LogOut size={18} className="text-green-neon" strokeWidth={1.5} />
-                        <span>Logout</span>
-                    </button>
-                </div>
-            </motion.header>
-
             {/* Main Content */}
             <main className="max-w-7xl mx-auto p-6 space-y-6">
                 {/* Quick Start Section */}
@@ -137,7 +111,7 @@ function Dashboard({ user, onStartSession, onLogout, onNavigate }) {
                 {/* Quick Actions */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <motion.button
-                        onClick={() => onNavigate('analytics')}
+                        onClick={() => navigate('/analytics')}
                         className="glass-panel-hover p-6 text-left"
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
@@ -155,7 +129,7 @@ function Dashboard({ user, onStartSession, onLogout, onNavigate }) {
                     </motion.button>
 
                     <motion.button
-                        onClick={() => onNavigate('exercises')}
+                        onClick={() => navigate('/exercises')}
                         className="glass-panel-hover p-6 text-left"
                         initial={{ opacity: 0, x: 20 }}
                         animate={{ opacity: 1, x: 0 }}
@@ -255,9 +229,10 @@ function Dashboard({ user, onStartSession, onLogout, onNavigate }) {
                         <>
                             <div className="grid grid-cols-1 gap-3">
                                 {currentSessions.map((session) => (
-                                    <motion.div
+                                    <motion.button
                                         key={session.session_id}
-                                        className="glass-panel-hover p-4"
+                                        onClick={() => navigate(`/session/${session.session_id}`)}
+                                        className="glass-panel-hover p-4 text-left w-full cursor-pointer"
                                         whileHover={{ x: 4 }}
                                     >
                                         <div className="flex items-center justify-between">
@@ -284,7 +259,7 @@ function Dashboard({ user, onStartSession, onLogout, onNavigate }) {
                                                 )}
                                             </div>
                                         </div>
-                                    </motion.div>
+                                    </motion.button>
                                 ))}
                             </div>
 
@@ -338,39 +313,14 @@ function Dashboard({ user, onStartSession, onLogout, onNavigate }) {
                         </div>
                     )}
                 </motion.section>
-
-                {/* Crisis Support */}
-                <motion.section
-                    className="glass-panel p-6 border-white/20"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.5 }}
-                >
-                    <div className="flex items-center justify-between">
-                        <div>
-                            <h4 className="text-lg font-semibold text-white mb-1">Need immediate support?</h4>
-                            <p className="text-white/40">Access crisis helplines and emergency resources</p>
-                        </div>
-                        <button
-                            onClick={() => setShowCrisisModal(true)}
-                            className="btn-secondary"
-                        >
-                            Crisis Resources
-                        </button>
-                    </div>
-                </motion.section>
             </main>
-
-            {/* Emergency button */}
-            <EmergencyButton onClick={() => setShowCrisisModal(true)} />
-            <CrisisModal isOpen={showCrisisModal} onClose={() => setShowCrisisModal(false)} />
 
             {/* Mode Selection Modal */}
             <ModeSelectionModal
                 isOpen={showModeSelection}
                 onSelectMode={(mode) => {
                     setShowModeSelection(false);
-                    onStartSession(mode); // Pass selected mode to App.jsx
+                    navigate(`/session/${mode}`); // Navigate to /session/voice or /session/chat
                 }}
                 onClose={() => setShowModeSelection(false)}
             />
