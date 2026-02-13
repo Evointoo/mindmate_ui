@@ -2,15 +2,18 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Calendar, TrendingUp, Heart, Award } from 'lucide-react';
-import { chatAPI } from '../../utils/api';
+import { chatAPI, profileAPI } from '../../utils/api';
 
 function ProfileOverview({ user, accessToken }) {
     const navigate = useNavigate();
     const [sessions, setSessions] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [userName, setUserName] = useState(''); // User's actual name
+    const [avatarUrl, setAvatarUrl] = useState(null);
 
     useEffect(() => {
         fetchSessions();
+        fetchUserProfile();
     }, []);
 
     const fetchSessions = async () => {
@@ -24,10 +27,24 @@ function ProfileOverview({ user, accessToken }) {
         }
     };
 
+    const fetchUserProfile = async () => {
+        try {
+            const response = await profileAPI.getProfile(user.id);
+            if (response.data.actual_name) {
+                setUserName(response.data.actual_name);
+            }
+            if (response.data.avatar_image) {
+                setAvatarUrl(`/avatars/${response.data.avatar_image}`);
+            }
+        } catch (error) {
+            console.error('Failed to fetch user profile:', error);
+        }
+    };
+
     const stats = [
         {
             icon: Calendar,
-            label: 'Total Sessions',
+            label: 'Total Chats',
             value: sessions.length,
             color: 'text-green-neon',
         },
@@ -58,14 +75,22 @@ function ProfileOverview({ user, accessToken }) {
     return (
         <div className="space-y-6">
             {/* User Info */}
-            <div className="flex items-center gap-4">
-                <div className="w-20 h-20 rounded-full bg-green-neon/10 border-2 border-green-neon flex items-center justify-center">
-                    <span className="text-3xl font-bold text-green-neon">
-                        {user.email[0].toUpperCase()}
-                    </span>
+            <div className="flex items-center gap-6 mb-8">
+                <div className="w-24 h-24 rounded-full bg-black-secondary flex items-center justify-center border-4 border-white/10 shadow-[0_0_30px_rgba(34,197,94,0.3)] overflow-hidden">
+                    {avatarUrl ? (
+                        <img
+                            src={avatarUrl}
+                            alt="Profile"
+                            className="w-full h-full object-cover"
+                        />
+                    ) : (
+                        <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-green-neon to-blue-500 text-3xl font-bold text-black">
+                            {user.name ? user.name[0] : user.email[0].toUpperCase()}
+                        </div>
+                    )}
                 </div>
                 <div>
-                    <h2 className="text-2xl font-bold text-white">{user.name || user.email.split('@')[0]}</h2>
+                    <h2 className="text-2xl font-bold text-white">{userName || user.name || user.email.split('@')[0]}</h2>
                     <p className="text-white/60">{user.email}</p>
                 </div>
             </div>
@@ -136,7 +161,7 @@ function ProfileOverview({ user, accessToken }) {
                     </div>
                 ) : (
                     <div className="glass-panel p-6 text-center text-white/40">
-                        No sessions yet. Start your first therapy session!
+                        No chats yet. Start your first friendly chat!
                     </div>
                 )}
             </div>

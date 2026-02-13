@@ -2,6 +2,9 @@ import { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import LoginPage from './pages/LoginPage';
+import ProfileSetup from './pages/ProfileSetup';
+import PersonalityAnalysis from './pages/PersonalityAnalysis';
+import CreateAI from './pages/CreateAI';
 import OnboardingAssessment from './pages/OnboardingAssessment';
 import VoiceTherapySession from './pages/VoiceTherapySession';
 import ChatTherapySession from './pages/ChatTherapySession';
@@ -74,15 +77,44 @@ function AppRoutes({ user, accessToken, handleLoginSuccess, handleLogout }) {
 
     return (
         <Routes>
-            {/* Public Routes */}
+            {/* Public Route - Login */}
             <Route
                 path="/"
                 element={
-                    user ? <Navigate to="/dashboard" replace /> : <LoginPage onLoginSuccess={handleLoginSuccess} />
+                    user ? (
+                        // Check if profile is completed
+                        user.profile_completed === false ? (
+                            <Navigate to="/profile-setup" replace />
+                        ) : (
+                            <Navigate to="/dashboard" replace />
+                        )
+                    ) : (
+                        <LoginPage onLoginSuccess={handleLoginSuccess} />
+                    )
                 }
             />
 
-            {/* Onboarding */}
+            {/* Onboarding Flow - Protected */}
+            <Route
+                path="/profile-setup"
+                element={
+                    user ? <ProfileSetup user={user} /> : <Navigate to="/" replace />
+                }
+            />
+            <Route
+                path="/personality-analysis"
+                element={
+                    user ? <PersonalityAnalysis user={user} /> : <Navigate to="/" replace />
+                }
+            />
+            <Route
+                path="/create-ai"
+                element={
+                    user ? <CreateAI user={user} /> : <Navigate to="/" replace />
+                }
+            />
+
+            {/* Onboarding Assessment (after AI creation) */}
             <Route
                 path="/onboarding"
                 element={
