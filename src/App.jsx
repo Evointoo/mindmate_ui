@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import LoginPage from './pages/LoginPage';
 import OnboardingAssessment from './pages/OnboardingAssessment';
@@ -56,75 +56,90 @@ function App() {
     return (
         <GoogleOAuthProvider clientId="810123044890-e60fdng4ao7or90lc7cvjr4kfve4dmkl.apps.googleusercontent.com">
             <BrowserRouter>
-                <Routes>
-                    {/* Public Routes */}
-                    <Route
-                        path="/"
-                        element={
-                            user ? <Navigate to="/dashboard" replace /> : <LoginPage onLoginSuccess={handleLoginSuccess} />
-                        }
-                    />
-
-                    {/* Onboarding */}
-                    <Route
-                        path="/onboarding"
-                        element={
-                            user ? (
-                                <OnboardingAssessment
-                                    user={user}
-                                    accessToken={accessToken}
-                                    onComplete={() => window.location.href = '/dashboard'}
-                                />
-                            ) : (
-                                <Navigate to="/" replace />
-                            )
-                        }
-                    />
-
-                    {/* Protected Routes with Layout */}
-                    <Route element={user ? <Layout user={user} onLogout={handleLogout} /> : <Navigate to="/" replace />}>
-                        <Route path="/dashboard" element={<Dashboard user={user} accessToken={accessToken} />} />
-                        <Route path="/profile" element={<Profile user={user} accessToken={accessToken} />} />
-                        <Route path="/session/:sessionId" element={<SessionDetail user={user} accessToken={accessToken} />} />
-                        <Route path="/analytics" element={<MoodAnalytics user={user} accessToken={accessToken} />} />
-                        <Route path="/exercises" element={<GroundingExercises />} />
-                    </Route>
-
-                    {/* Session Routes (Full Screen - No Layout) */}
-                    <Route
-                        path="/session/voice"
-                        element={
-                            user ? (
-                                <VoiceTherapySession
-                                    user={user}
-                                    accessToken={accessToken}
-                                    onEndSession={() => window.location.href = '/dashboard'}
-                                />
-                            ) : (
-                                <Navigate to="/" replace />
-                            )
-                        }
-                    />
-                    <Route
-                        path="/session/chat"
-                        element={
-                            user ? (
-                                <ChatTherapySession
-                                    user={user}
-                                    accessToken={accessToken}
-                                    onEndSession={() => window.location.href = '/dashboard'}
-                                />
-                            ) : (
-                                <Navigate to="/" replace />
-                            )
-                        }
-                    />
-
-                    {/* Catch all */}
-                    <Route path="*" element={<Navigate to="/" replace />} />
-                </Routes>
+                <AppRoutes
+                    user={user}
+                    accessToken={accessToken}
+                    handleLoginSuccess={handleLoginSuccess}
+                    handleLogout={handleLogout}
+                />
             </BrowserRouter>
         </GoogleOAuthProvider>
+    );
+}
+
+function AppRoutes({ user, accessToken, handleLoginSuccess, handleLogout }) {
+    const navigate = useNavigate();
+
+    const goToDashboard = () => navigate('/dashboard');
+
+    return (
+        <Routes>
+            {/* Public Routes */}
+            <Route
+                path="/"
+                element={
+                    user ? <Navigate to="/dashboard" replace /> : <LoginPage onLoginSuccess={handleLoginSuccess} />
+                }
+            />
+
+            {/* Onboarding */}
+            <Route
+                path="/onboarding"
+                element={
+                    user ? (
+                        <OnboardingAssessment
+                            user={user}
+                            accessToken={accessToken}
+                            onComplete={goToDashboard}
+                        />
+                    ) : (
+                        <Navigate to="/" replace />
+                    )
+                }
+            />
+
+            {/* Protected Routes with Layout */}
+            <Route element={user ? <Layout user={user} onLogout={handleLogout} /> : <Navigate to="/" replace />}>
+                <Route path="/dashboard" element={<Dashboard user={user} accessToken={accessToken} />} />
+                <Route path="/profile" element={<Profile user={user} accessToken={accessToken} />} />
+                <Route path="/session/:sessionId" element={<SessionDetail user={user} accessToken={accessToken} />} />
+                <Route path="/analytics" element={<MoodAnalytics user={user} accessToken={accessToken} />} />
+                <Route path="/exercises" element={<GroundingExercises />} />
+            </Route>
+
+            {/* Session Routes (Full Screen - No Layout) */}
+            <Route
+                path="/session/voice"
+                element={
+                    user ? (
+                        <VoiceTherapySession
+                            user={user}
+                            accessToken={accessToken}
+                            onEndSession={goToDashboard}
+                        />
+                    ) : (
+                        <Navigate to="/" replace />
+                    )
+                }
+            />
+            <Route
+                path="/session/chat"
+                element={
+                    user ? (
+                        <ChatTherapySession
+                            user={user}
+                            accessToken={accessToken}
+                            onEndSession={goToDashboard}
+                        />
+                    ) : (
+                        <Navigate to="/" replace />
+                    )
+                }
+            />
+
+            {/* Catch all */}
+            <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
     );
 }
 
