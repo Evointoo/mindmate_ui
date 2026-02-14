@@ -2,9 +2,6 @@ import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Heart, Loader } from 'lucide-react';
 import { chatAPI, profileAPI } from '../utils/api';
-
-// API definition
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 import {
     MoodSlider,
     ChatBubble,
@@ -24,7 +21,6 @@ function ChatTherapySession({ user, accessToken, onEndSession }) {
     const [moodAfter, setMoodAfter] = useState(null);
     const [showMoodInput, setShowMoodInput] = useState(true);
     const [showEndSessionModal, setShowEndSessionModal] = useState(false);
-    const [avatarUrl, setAvatarUrl] = useState(null);
 
     // Chat state
     const [messages, setMessages] = useState([]);
@@ -36,31 +32,32 @@ function ChatTherapySession({ user, accessToken, onEndSession }) {
 
     // UI state
     const [showCrisisModal, setShowCrisisModal] = useState(false);
+    const [avatarUrl, setAvatarUrl] = useState(null);
 
     // Refs
     const timerRef = useRef(null);
     const sessionIdRef = useRef(null);
     const messagesEndRef = useRef(null);
 
-    // Fetch user profile on mount to get avatar
+    // Auto-scroll to bottom when new messages arrive
     useEffect(() => {
-        const fetchUserProfile = async () => {
+        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }, [messages]);
+
+    // Fetch avatar URL on mount
+    useEffect(() => {
+        const fetchAvatar = async () => {
             try {
                 const response = await profileAPI.getProfile(user.id);
-                if (response.data.avatar_image) {
-                    setAvatarUrl(`/avatars/${response.data.avatar_image}`);
+                if (response.data.avatar_url) {
+                    setAvatarUrl(response.data.avatar_url);
                 }
             } catch (error) {
                 console.error('Failed to fetch user profile:', error);
             }
         };
-        fetchUserProfile();
+        fetchAvatar();
     }, [user.id]);
-
-    // Auto-scroll to bottom when new messages arrive
-    useEffect(() => {
-        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-    }, [messages]);
 
     // Start session when mood is set
     const startSession = async (mood) => {
@@ -250,7 +247,7 @@ function ChatTherapySession({ user, accessToken, onEndSession }) {
                             role={message.role}
                             content={message.content}
                             timestamp={message.timestamp}
-                            avatarUrl={message.role === 'assistant' ? avatarUrl : null}
+                            avatarUrl={avatarUrl}
                         />
                     ))}
 

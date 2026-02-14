@@ -27,13 +27,13 @@ const ChatBubble = ({ role, content, timestamp, avatarUrl }) => {
             {/* Avatar */}
             <div className={`
         flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center overflow-hidden
-        ${isUser ? 'bg-green-neon/20 border border-green-neon/30' : 'bg-white/5 border border-white/10'}
+        ${isUser ? 'bg-green-neon/20 border border-green-neon/30' : 'bg-black-secondary border border-white/10'}
       `}>
                 {isUser ? (
                     <User size={16} className="text-green-neon" strokeWidth={1.5} />
                 ) : (
                     avatarUrl ? (
-                        <img src={avatarUrl} alt="MindMate" className="w-full h-full object-cover" />
+                        <img src={avatarUrl.startsWith('http') ? avatarUrl : avatarUrl} alt="MindMate" className="w-full h-full object-cover" />
                     ) : (
                         <img src="/favicon.svg" alt="MindMate" className="w-5 h-5 object-contain" />
                     )

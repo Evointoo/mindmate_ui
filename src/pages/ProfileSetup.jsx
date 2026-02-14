@@ -281,7 +281,7 @@ function ProfileSetup({ user }) {
                                             whileHover={{ scale: 1.02 }}
                                             whileTap={{ scale: 0.98 }}
                                         >
-                                            <div className="aspect-square bg-white/5 rounded-lg mb-3 flex items-center justify-center overflow-hidden">
+                                            <div className="aspect-square bg-black-secondary rounded-lg mb-3 flex items-center justify-center overflow-hidden border border-white/10">
                                                 <img
                                                     src={avatar.image_url}
                                                     alt={avatar.name}
