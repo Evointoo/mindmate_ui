@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
  * ChatBubble - Premium message display for transcript
  * Clean, minimal design with professional styling
  */
-const ChatBubble = ({ role, content, timestamp }) => {
+const ChatBubble = ({ role, content, timestamp, avatarUrl }) => {
     const isUser = role === 'user';
 
     const formatTime = (isoString) => {
@@ -32,7 +32,11 @@ const ChatBubble = ({ role, content, timestamp }) => {
                 {isUser ? (
                     <User size={16} className="text-green-neon" strokeWidth={1.5} />
                 ) : (
-                    <img src="/favicon.svg" alt="MindMate" className="w-5 h-5 object-contain" />
+                    avatarUrl ? (
+                        <img src={avatarUrl} alt="MindMate" className="w-full h-full object-cover" />
+                    ) : (
+                        <img src="/favicon.svg" alt="MindMate" className="w-5 h-5 object-contain" />
+                    )
                 )}
             </div>
 
@@ -64,6 +68,7 @@ ChatBubble.propTypes = {
     role: PropTypes.oneOf(['user', 'assistant']).isRequired,
     content: PropTypes.string.isRequired,
     timestamp: PropTypes.string,
+    avatarUrl: PropTypes.string,
 };
 
 export default ChatBubble;

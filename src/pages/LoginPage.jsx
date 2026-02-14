@@ -1,53 +1,39 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { GoogleLogin } from '@react-oauth/google';
-import { Heart, Shield, Mic, Brain } from 'lucide-react';
+import { Shield, Mic, Brain } from 'lucide-react';
 import { authAPI } from '../utils/api';
 
 function LoginPage({ onLoginSuccess }) {
-    const [phoneNumber, setPhoneNumber] = useState('');
-    const [showPhoneInput, setShowPhoneInput] = useState(false);
-    const [googleToken, setGoogleToken] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
-    const handleGoogleSuccess = (credentialResponse) => {
+    const handleGoogleSuccess = async (credentialResponse) => {
         console.log('Google Sign-In successful');
-        setGoogleToken(credentialResponse.credential);
-        setShowPhoneInput(true);
-        setError(null);
-    };
-
-    const handleGoogleError = () => {
-        setError('Google Sign-In failed. Please try again.');
-    };
-
-    const handlePhoneSubmit = async (e) => {
-        e.preventDefault();
-
-        if (!phoneNumber || phoneNumber.length < 10) {
-            setError('Please enter a valid phone number');
-            return;
-        }
-
         setLoading(true);
         setError(null);
 
         try {
+            // Direct API call after Google sign-in (no phone number)
             const response = await authAPI.googleSignIn({
-                google_token: googleToken,
-                phone_number: phoneNumber,
+                google_token: credentialResponse.credential,
                 language_preference: 'english'
             });
 
             const { access_token, user } = response.data;
             onLoginSuccess(access_token, user);
+
+            // App.jsx will handle redirect based on user.profile_completed
         } catch (err) {
             console.error('Sign-in error:', err);
             setError(err.response?.data?.detail || 'Sign-in failed. Please try again.');
         } finally {
             setLoading(false);
         }
+    };
+
+    const handleGoogleError = () => {
+        setError('Google Sign-In failed. Please try again.');
     };
 
     return (
@@ -72,21 +58,22 @@ function LoginPage({ onLoginSuccess }) {
                             className="inline-flex items-center justify-center mb-6"
                             whileHover={{ scale: 1.05 }}
                         >
-                            {/* Using the SVG Logo directly or as an image */}
                             <img src="/logo.svg" alt="MindMate Logo" className="h-20 w-auto object-contain" />
                         </motion.div>
                         <p className="text-white/60 text-sm leading-relaxed mt-2">
-                            Your trusted companion for mental health and CBT therapy
+                            Your trusted AI companion for mental wellness and friendly chats
                         </p>
                     </div>
 
-                    {/* Form content */}
-                    {!showPhoneInput ? (
-                        <div className="space-y-6">
-                            <p className="text-center text-white/80 font-medium">Sign in to continue</p>
+                    {/* Sign in section */}
+                    <div className="space-y-6">
+                        <p className="text-center text-white/80 font-medium">Sign in to continue</p>
 
-                            {/* Google Sign-In Button */}
-                            <div className="flex justify-center">
+                        {/* Google Sign-In Button */}
+                        <div className="flex justify-center">
+                            {loading ? (
+                                <div className="text-white/60">Signing in...</div>
+                            ) : (
                                 <GoogleLogin
                                     onSuccess={handleGoogleSuccess}
                                     onError={handleGoogleError}
@@ -96,68 +83,25 @@ function LoginPage({ onLoginSuccess }) {
                                     text="continue_with"
                                     shape="rectangular"
                                 />
-                            </div>
+                            )}
+                        </div>
 
-                            {/* Features */}
-                            <div className="space-y-3 pt-4">
-                                <div className="flex items-center gap-3 text-sm text-white/60">
-                                    <div className="w-1.5 h-1.5 rounded-full bg-green-neon" />
-                                    <span>Voice-first therapy sessions</span>
-                                </div>
-                                <div className="flex items-center gap-3 text-sm text-white/60">
-                                    <div className="w-1.5 h-1.5 rounded-full bg-green-neon" />
-                                    <span>CBT-informed guidance</span>
-                                </div>
-                                <div className="flex items-center gap-3 text-sm text-white/60">
-                                    <div className="w-1.5 h-1.5 rounded-full bg-green-neon" />
-                                    <span>Private & confidential</span>
-                                </div>
+                        {/* Features */}
+                        <div className="space-y-3 pt-4">
+                            <div className="flex items-center gap-3 text-sm text-white/60">
+                                <div className="w-1.5 h-1.5 rounded-full bg-green-neon" />
+                                <span>Voice-first friendly chats</span>
+                            </div>
+                            <div className="flex items-center gap-3 text-sm text-white/60">
+                                <div className="w-1.5 h-1.5 rounded-full bg-green-neon" />
+                                <span>CBT-informed guidance</span>
+                            </div>
+                            <div className="flex items-center gap-3 text-sm text-white/60">
+                                <div className="w-1.5 h-1.5 rounded-full bg-green-neon" />
+                                <span>Private & confidential</span>
                             </div>
                         </div>
-                    ) : (
-                        <form onSubmit={handlePhoneSubmit} className="space-y-6">
-                            <div className="text-center">
-                                <h3 className="text-xl font-semibold text-white mb-2">Complete Your Profile</h3>
-                                <p className="text-sm text-white/60">Enter your phone number to continue</p>
-                            </div>
-
-                            <div>
-                                <label htmlFor="phone" className="block text-sm font-medium text-white/80 mb-2">
-                                    Phone Number
-                                </label>
-                                <input
-                                    id="phone"
-                                    type="tel"
-                                    placeholder="+91 9876543210"
-                                    value={phoneNumber}
-                                    onChange={(e) => setPhoneNumber(e.target.value)}
-                                    className="input-glass"
-                                    disabled={loading}
-                                />
-                            </div>
-
-                            <button
-                                type="submit"
-                                className="btn-primary w-full"
-                                disabled={loading}
-                            >
-                                {loading ? 'Signing in...' : 'Complete Sign-In'}
-                            </button>
-
-                            <button
-                                type="button"
-                                className="btn-ghost w-full"
-                                onClick={() => {
-                                    setShowPhoneInput(false);
-                                    setPhoneNumber('');
-                                    setGoogleToken(null);
-                                }}
-                                disabled={loading}
-                            >
-                                Back
-                            </button>
-                        </form>
-                    )}
+                    </div>
 
                     {/* Error message */}
                     {error && (

@@ -51,14 +51,13 @@ api.interceptors.response.use(
     }
 );
 
-// API endpoints
+// ===== AUTH API =====
 export const authAPI = {
     googleSignIn: (data) => api.post('/api/auth/google-signin', data),
-    checkPhone: (phone) => api.get(`/api/auth/check-phone?phone=${phone}`),
-    updatePhone: (userId, phoneNumber) =>
-        api.post('/api/auth/update-phone', { user_id: userId, phone_number: phoneNumber }),
+    getMe: (token) => api.get(`/api/auth/me?token=${token}`),
 };
 
+// ===== ASSESSMENT API =====
 export const assessmentAPI = {
     getQuestions: () => api.get('/api/assessment/questions'),
     submitAssessment: (userId, data) =>
@@ -66,6 +65,7 @@ export const assessmentAPI = {
     getStatus: (userId) => api.get(`/api/assessment/status/${userId}`),
 };
 
+// ===== CHAT API =====
 export const chatAPI = {
     startSession: (userId, moodBefore) =>
         api.post(`/api/chat/start-session?user_id=${userId}`, { mood_before: moodBefore }),
@@ -78,8 +78,32 @@ export const chatAPI = {
         api.get(`/api/chat/session/${sessionId}/history?user_id=${userId}`),
 };
 
+// ===== CRISIS API =====
 export const crisisAPI = {
     detect: (message) => api.post('/api/crisis/detect', { user_input: message }),
+};
+
+// ===== PROFILE API =====
+export const profileAPI = {
+    getStatus: (userId) => api.get(`/api/profile/status/${userId}`),
+    checkUsername: (username) => api.post('/api/profile/check-username', { username }),
+    setupProfile: (data) => api.post('/api/profile/setup', data),
+    getAvatars: () => api.get('/api/profile/avatars'),
+    selectAvatar: (data) => api.post('/api/profile/select-avatar', data),
+    getProfile: (userId) => api.get(`/api/profile/${userId}`),
+};
+
+// ===== PERSONALITY API =====
+export const personalityAPI = {
+    getQuestions: () => api.get('/api/personality/questions'),
+    analyze: (data) => api.post('/api/personality/analyze', data),
+    getProfile: (userId) => api.get(`/api/personality/profile/${userId}`),
+};
+
+// ===== PERSONAL AI API =====
+export const personalAIAPI = {
+    create: (data) => api.post('/api/ai/create', data),
+    getProfile: (userId) => api.get(`/api/ai/profile/${userId}`),
 };
 
 export default api;

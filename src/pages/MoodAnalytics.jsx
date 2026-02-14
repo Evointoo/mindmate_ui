@@ -155,7 +155,7 @@ function MoodAnalytics({ user }) {
                             <TrendingUp size={18} className="text-white/40" strokeWidth={1.5} />
                         </div>
                         <p className="text-4xl font-bold text-white">{stats.improvement}%</p>
-                        <p className="text-xs text-white/40 mt-1">Last 3 sessions</p>
+                        <p className="text-xs text-white/40 mt-1">Last 3 chats</p>
                     </motion.div>
                 </div>
 
@@ -194,7 +194,7 @@ function MoodAnalytics({ user }) {
                                     strokeWidth={2}
                                     dot={{ fill: '#22C55E', r: 4 }}
                                     activeDot={{ r: 6 }}
-                                    name="Before Session"
+                                    name="Before Chat"
                                 />
                                 <Line
                                     type="monotone"
@@ -203,7 +203,7 @@ function MoodAnalytics({ user }) {
                                     strokeWidth={2}
                                     strokeDasharray="5 5"
                                     dot={{ fill: 'rgba(255,255,255,0.4)', r: 4 }}
-                                    name="After Session"
+                                    name="After Chat"
                                 />
                             </LineChart>
                         </ResponsiveContainer>
@@ -212,7 +212,7 @@ function MoodAnalytics({ user }) {
                             <TrendingUp size={48} className="text-white/20 mb-4" strokeWidth={1.5} />
                             <h3 className="text-lg font-semibold text-white mb-2">No data yet</h3>
                             <p className="text-white/40 text-center">
-                                Complete therapy sessions to see your mood trends
+                                Complete a few chats to see your mood trends
                             </p>
                         </div>
                     )}
@@ -237,7 +237,7 @@ function MoodAnalytics({ user }) {
                                     <div>
                                         <h4 className="font-medium text-white mb-1">Consistency Matters</h4>
                                         <p className="text-sm text-white/60 leading-relaxed">
-                                            You've completed {moodData.length} sessions. Regular therapy sessions help build emotional resilience.
+                                            You've completed {moodData.length} chats. Regular friendly conversations help build emotional resilience.
                                         </p>
                                     </div>
                                 </div>

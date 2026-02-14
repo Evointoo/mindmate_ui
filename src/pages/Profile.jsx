@@ -11,7 +11,7 @@ function Profile({ user, accessToken }) {
 
     const tabs = [
         { id: 'overview', label: 'Overview', icon: UserCircle },
-        { id: 'history', label: 'Session History', icon: History },
+        { id: 'history', label: 'Chat History', icon: History },
         { id: 'settings', label: 'Settings', icon: Settings },
     ];
 
@@ -38,7 +38,7 @@ function Profile({ user, accessToken }) {
                 {/* Header */}
                 <div className="mb-6">
                     <h1 className="text-3xl font-bold text-white mb-2">Profile</h1>
-                    <p className="text-white/60">Manage your account and view your therapy journey</p>
+                    <p className="text-white/60">Manage your account and view your wellness journey</p>
                 </div>
 
                 {/* Tabs */}

@@ -47,7 +47,7 @@ function SessionDetail({ user, accessToken }) {
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = `therapy-session-${sessionId}.txt`;
+        a.download = `chat-conversation-${sessionId}.txt`;
         a.click();
         URL.revokeObjectURL(url);
     };
@@ -64,7 +64,7 @@ function SessionDetail({ user, accessToken }) {
         return (
             <div className="min-h-screen p-6 flex items-center justify-center">
                 <div className="text-center">
-                    <h2 className="text-2xl font-bold text-white mb-2">Session not found</h2>
+                    <h2 className="text-2xl font-bold text-white mb-2">Chat not found</h2>
                     <button onClick={() => navigate('/profile')} className="btn-secondary mt-4">
                         Back to Profile
                     </button>
@@ -92,7 +92,7 @@ function SessionDetail({ user, accessToken }) {
 
                     <div className="flex items-center justify-between">
                         <div>
-                            <h1 className="text-3xl font-bold text-white mb-2">Therapy Session</h1>
+                            <h1 className="text-3xl font-bold text-white mb-2">Chat Conversation</h1>
                             <p className="text-white/60">
                                 {sessionData.messages[0]?.timestamp &&
                                     formatDate(sessionData.messages[0].timestamp)}
@@ -165,18 +165,18 @@ function SessionDetail({ user, accessToken }) {
                             >
                                 <div
                                     className={`max-w-[80%] p-4 rounded-lg ${message.role === 'user'
-                                            ? 'bg-green-neon/10 border border-green-neon/30'
-                                            : 'bg-white/5 border border-white/10'
+                                        ? 'bg-green-neon/10 border border-green-neon/30'
+                                        : 'bg-white/5 border border-white/10'
                                         }`}
                                 >
                                     <div className="flex items-center gap-2 mb-2">
                                         <span
                                             className={`text-xs font-semibold uppercase ${message.role === 'user'
-                                                    ? 'text-green-neon'
-                                                    : 'text-white/60'
+                                                ? 'text-green-neon'
+                                                : 'text-white/60'
                                                 }`}
                                         >
-                                            {message.role === 'user' ? 'You' : 'Therapist'}
+                                            {message.role === 'user' ? 'You' : 'Friend'}
                                         </span>
                                         <span className="text-xs text-white/40">
                                             {new Date(message.timestamp).toLocaleTimeString('en-IN', {

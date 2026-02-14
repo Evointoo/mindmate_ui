@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, MessageSquare, Clock, Heart, Mic } from 'lucide-react'; // Added Mic icon
-import { chatAPI } from '../utils/api';
+import { chatAPI, personalAIAPI, profileAPI } from '../utils/api';
 import {
     MicrophoneButton,
     WaveformVisualizer,
@@ -14,6 +14,9 @@ import {
 } from '../components';
 import './VoiceTherapySession.css';
 
+// API definition
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+
 function VoiceTherapySession({ user, accessToken, onEndSession }) {
     // Session state
     const [sessionId, setSessionId] = useState(null);
@@ -22,6 +25,8 @@ function VoiceTherapySession({ user, accessToken, onEndSession }) {
     const [moodAfter, setMoodAfter] = useState(null); // Track mood after
     const [showMoodInput, setShowMoodInput] = useState(true);
     const [showEndSessionModal, setShowEndSessionModal] = useState(false); // Modal state
+    const [aiVoice, setAiVoice] = useState(null); // User's selected AI voice
+    const [userName, setUserName] = useState(''); // User's actual name
 
     // Voice state
     const [isRecording, setIsRecording] = useState(false);
@@ -31,6 +36,7 @@ function VoiceTherapySession({ user, accessToken, onEndSession }) {
     // UI state
     const [transcript, setTranscript] = useState([]);
     const [showTranscript, setShowTranscript] = useState(false);
+    const [avatarUrl, setAvatarUrl] = useState(null);
     const [showCrisisModal, setShowCrisisModal] = useState(false);
     const [statusText, setStatusText] = useState('');
 
@@ -40,6 +46,32 @@ function VoiceTherapySession({ user, accessToken, onEndSession }) {
     const sessionIdRef = useRef(null);
     const transcriptEndRef = useRef(null);
 
+    // Fetch user's AI voice and profile on mount
+    useEffect(() => {
+        const fetchUserProfile = async () => {
+            try {
+                // Fetch AI voice
+                const aiResponse = await personalAIAPI.getProfile(user.id);
+                setAiVoice(aiResponse.data.voice_model);
+                if (aiResponse.data.avatar_image) {
+                    setAvatarUrl(`/avatars/${aiResponse.data.avatar_image}`);
+                }
+                console.log('AI Voice loaded:', aiResponse.data.voice_model);
+
+                // Fetch user's actual name from profile
+                const profileResponse = await profileAPI.getProfile(user.id);
+                if (profileResponse.data.actual_name) {
+                    setUserName(profileResponse.data.actual_name);
+                }
+            } catch (error) {
+                console.error('Failed to fetch user profile:', error);
+                // Fallback to default voice
+                setAiVoice('kavya');
+            }
+        };
+        fetchUserProfile();
+    }, [user.id]);
+
     // Auto-scroll transcript
     useEffect(() => {
         transcriptEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -48,7 +80,7 @@ function VoiceTherapySession({ user, accessToken, onEndSession }) {
     // Start session when mood is set
     const startSession = async (mood) => {
         try {
-            console.log('Starting therapy session with mood:', mood);
+            console.log('Starting friendly chat with mood:', mood);
             const response = await chatAPI.startSession(user.id, mood);
 
             const { session_id, initial_greeting } = response.data;
@@ -220,58 +252,74 @@ function VoiceTherapySession({ user, accessToken, onEndSession }) {
         }
     };
 
-    // Text-to-speech using browser with soft, friendly Indian voice
-    const speakText = (text, onEnd) => {
-        if ('speechSynthesis' in window) {
+    // Text-to-speech using Sarvam AI STREAMING with fallback to browser TTS
+    const speakText = async (text, onEnd) => {
+        const apiKey = import.meta.env.VITE_SARVAM_API_KEY;
+
+        // If no API key or no AI voice selected, use browser TTS
+        if (!apiKey || !aiVoice) {
+            console.warn('Sarvam API key or AI voice not available, using browser TTS');
+            fallbackToBrowserTTS(text, onEnd);
+            return;
+        }
+
+        try {
             setIsSpeaking(true);
             setStatusText('MindMate is speaking...');
 
-            const textWithoutEmojis = text
-                .replace(/([\u2700-\u27BF]|[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2011-\u26FF]|\uD83E[\uDD10-\uDDFF])/g, '')
-                .replace(/\s+/g, ' ')
-                .trim();
+            const response = await fetch('https://api.sarvam.ai/text-to-speech', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'api-subscription-key': apiKey
+                },
+                body: JSON.stringify({
+                    inputs: [text],
+                    target_language_code: 'en-IN',
+                    speaker: aiVoice,
+                    model: 'bulbul:v3',
+                    pace: 1.0,
+                    speech_sample_rate: 8000,
+                    output_audio_codec: 'mp3', // MP3 for streaming
+                    enable_preprocessing: false
+                })
+            });
 
-            const utterance = new SpeechSynthesisUtterance(textWithoutEmojis);
-
-            // Try to find an Indian English voice
-            const voices = window.speechSynthesis.getVoices();
-            const indianVoice = voices.find(voice =>
-                voice.lang.includes('en-IN') && voice.name.toLowerCase().includes('female')
-            ) || voices.find(voice =>
-                voice.lang.includes('en-IN')
-            ) || voices.find(voice =>
-                voice.lang.includes('en') && voice.name.toLowerCase().includes('female')
-            );
-
-            if (indianVoice) {
-                utterance.voice = indianVoice;
-                console.log('🎤 Using voice:', indianVoice.name);
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error('Sarvam Streaming API error:', response.status, errorText);
+                throw new Error(`Sarvam streaming failed: ${response.status}`);
             }
 
-            // Soft, friendly voice settings
-            utterance.lang = 'en-IN';
-            utterance.rate = 0.85;  // Slower, more relaxed pace
-            utterance.pitch = 1.15; // Slightly higher, friendlier pitch
-            utterance.volume = 0.9; // Slightly softer volume
+            const data = await response.json();
+            console.log('✅ Sarvam API success');
 
-            utterance.onend = () => {
-                setIsSpeaking(false);
-                setStatusText('');
-                if (onEnd) onEnd();
-            };
+            if (data.audios && data.audios.length > 0) {
+                // Play the audio
+                const audio = new Audio(`data:audio/wav;base64,${data.audios[0]}`);
 
-            utterance.onerror = (error) => {
-                console.error('Speech synthesis error:', error);
-                setIsSpeaking(false);
-                setStatusText('');
-            };
+                audio.onended = () => {
+                    setIsSpeaking(false);
+                    setStatusText('');
+                    if (onEnd) onEnd();
+                };
 
-            window.speechSynthesis.speak(utterance);
-        } else {
-            console.error('Speech synthesis not supported');
-            setIsSpeaking(false);
-            setStatusText('');
-            if (onEnd) onEnd();
+                audio.onerror = (error) => {
+                    console.error('Audio playback error:', error);
+                    setIsSpeaking(false);
+                    setStatusText('');
+                    // Fallback to browser TTS
+                    fallbackToBrowserTTS(text, onEnd);
+                };
+
+                audio.play();
+            } else {
+                throw new Error('No audio data received');
+            }
+        } catch (error) {
+            console.error('Sarvam TTS error:', error);
+            // Fallback to browser TTS
+            fallbackToBrowserTTS(text, onEnd);
         }
     };
 
@@ -286,7 +334,6 @@ function VoiceTherapySession({ user, accessToken, onEndSession }) {
             const utterance = new SpeechSynthesisUtterance(textWithoutEmojis);
             utterance.lang = 'en-IN';
             utterance.rate = 0.9;
-            utterance.pitch = 1.1;
 
             utterance.onend = () => {
                 setIsSpeaking(false);
@@ -366,14 +413,14 @@ function VoiceTherapySession({ user, accessToken, onEndSession }) {
                         disabled={!moodBefore}
                         className="btn-primary w-full mt-8"
                     >
-                        Start Session
+                        Start Chat
                     </button>
                 </motion.div>
             </div>
         );
     }
 
-    // Main therapy session screen
+    // Main chat screen
     return (
         <div className="min-h-screen bg-black-primary flex flex-col relative overflow-hidden">
             {/* Background Ambience */}
@@ -393,6 +440,12 @@ function VoiceTherapySession({ user, accessToken, onEndSession }) {
 
                 {/* Center: Session Info (Absolutely centered) */}
                 <div className="absolute left-1/2 transform -translate-x-1/2 flex items-center gap-4 text-sm text-white">
+                    {userName && (
+                        <>
+                            <span className="text-green-neon font-semibold">{userName}</span>
+                            <span className="text-white/40">•</span>
+                        </>
+                    )}
                     <SessionTimer seconds={sessionTime} />
                     <span className="text-white/40">•</span>
                     <span>Mood: {moodBefore}/10</span>
@@ -414,18 +467,44 @@ function VoiceTherapySession({ user, accessToken, onEndSession }) {
                         onClick={handleEndSessionClick}
                         className="text-red-400 hover:text-red-300 text-sm font-medium transition-colors"
                     >
-                        End Session
+                        End Chat
                     </button>
                 </div>
             </motion.header>
 
             {/* Main content */}
             <div className="flex-1 flex flex-col items-center justify-center p-6 relative z-10">
-                {/* Center: Waveform + Microphone */}
-                <div className="flex flex-col items-center gap-12 w-full max-w-2xl">
+                {/* Center: Waveform + Microphone + Avatar */}
+                <div className="flex flex-col items-center gap-8 w-full max-w-2xl">
+
+                    {/* AI Avatar */}
+                    <div className="relative">
+                        {/* Glow effect when speaking */}
+                        {isSpeaking && (
+                            <motion.div
+                                className="absolute inset-0 bg-green-neon/40 rounded-full blur-2xl"
+                                animate={{ scale: [1, 1.1, 1], opacity: [0.6, 1, 0.6] }}
+                                transition={{ duration: 2, repeat: Infinity }}
+                            />
+                        )}
+
+                        <div className="w-48 h-48 rounded-full overflow-hidden border-4 border-white/10 relative z-10 shadow-2xl bg-black-secondary">
+                            {avatarUrl ? (
+                                <img
+                                    src={avatarUrl}
+                                    alt="MindMate"
+                                    className="w-full h-full object-cover"
+                                />
+                            ) : (
+                                <div className="w-full h-full flex items-center justify-center bg-white/5">
+                                    <img src="/logo.svg" alt="MindMate" className="w-20 h-20 opacity-50" />
+                                </div>
+                            )}
+                        </div>
+                    </div>
 
                     {/* New Waveform Visualizer (Placeholder for canvas update next) */}
-                    <div className="h-32 w-full flex items-center justify-center">
+                    <div className="h-24 w-full flex items-center justify-center">
                         <WaveformVisualizer
                             isActive={isRecording || isSpeaking}
                             audioLevel={audioLevel}
@@ -498,6 +577,7 @@ function VoiceTherapySession({ user, accessToken, onEndSession }) {
                                         role={message.role}
                                         content={message.content}
                                         timestamp={message.timestamp}
+                                        avatarUrl={message.role === 'assistant' ? avatarUrl : null}
                                     />
                                 ))}
                                 <div ref={transcriptEndRef} />

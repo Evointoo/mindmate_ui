@@ -12,7 +12,7 @@ function ProfileSettings({ user, accessToken }) {
                 </h3>
                 <div className="space-y-3">
                     <SettingToggle
-                        label="Session Reminders"
+                        label="Chat Reminders"
                         description="Get reminded to check in with yourself"
                         defaultChecked={true}
                     />
@@ -46,10 +46,10 @@ function ProfileSettings({ user, accessToken }) {
                         defaultValue="dark"
                     />
                     <SettingSelect
-                        label="Default Session Mode"
+                        label="Default Chat Mode"
                         options={[
-                            { value: 'voice', label: 'Voice Therapy' },
-                            { value: 'chat', label: 'Chat Therapy' },
+                            { value: 'voice', label: 'Voice Chat' },
+                            { value: 'chat', label: 'Text Chat' },
                             { value: 'ask', label: 'Ask Every Time' },
                         ]}
                         defaultValue="ask"
@@ -66,7 +66,7 @@ function ProfileSettings({ user, accessToken }) {
                 <div className="space-y-3">
                     <SettingToggle
                         label="Save Conversation History"
-                        description="Store your therapy sessions for future reference"
+                        description="Store your conversations for future reference"
                         defaultChecked={true}
                     />
                     <SettingToggle

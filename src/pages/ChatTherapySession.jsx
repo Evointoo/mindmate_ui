@@ -1,7 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Heart, Loader } from 'lucide-react';
-import { chatAPI } from '../utils/api';
+import { chatAPI, profileAPI } from '../utils/api';
+
+// API definition
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 import {
     MoodSlider,
     ChatBubble,
@@ -21,6 +24,7 @@ function ChatTherapySession({ user, accessToken, onEndSession }) {
     const [moodAfter, setMoodAfter] = useState(null);
     const [showMoodInput, setShowMoodInput] = useState(true);
     const [showEndSessionModal, setShowEndSessionModal] = useState(false);
+    const [avatarUrl, setAvatarUrl] = useState(null);
 
     // Chat state
     const [messages, setMessages] = useState([]);
@@ -38,6 +42,21 @@ function ChatTherapySession({ user, accessToken, onEndSession }) {
     const sessionIdRef = useRef(null);
     const messagesEndRef = useRef(null);
 
+    // Fetch user profile on mount to get avatar
+    useEffect(() => {
+        const fetchUserProfile = async () => {
+            try {
+                const response = await profileAPI.getProfile(user.id);
+                if (response.data.avatar_image) {
+                    setAvatarUrl(`/avatars/${response.data.avatar_image}`);
+                }
+            } catch (error) {
+                console.error('Failed to fetch user profile:', error);
+            }
+        };
+        fetchUserProfile();
+    }, [user.id]);
+
     // Auto-scroll to bottom when new messages arrive
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -46,7 +65,7 @@ function ChatTherapySession({ user, accessToken, onEndSession }) {
     // Start session when mood is set
     const startSession = async (mood) => {
         try {
-            console.log('Starting chat therapy session with mood:', mood);
+            console.log('Starting friendly chat with mood:', mood);
             const response = await chatAPI.startSession(user.id, mood);
 
             const { session_id, initial_greeting } = response.data;
@@ -180,7 +199,7 @@ function ChatTherapySession({ user, accessToken, onEndSession }) {
                         disabled={!moodBefore}
                         className="btn-primary w-full mt-8"
                     >
-                        Start Chat Session
+                        Start Chat
                     </button>
                 </motion.div>
             </div>
@@ -218,7 +237,7 @@ function ChatTherapySession({ user, accessToken, onEndSession }) {
                     onClick={handleEndSessionClick}
                     className="text-red-400 hover:text-red-300 text-sm font-medium transition-colors"
                 >
-                    End Session
+                    End Chat
                 </button>
             </motion.header>
 
@@ -231,6 +250,7 @@ function ChatTherapySession({ user, accessToken, onEndSession }) {
                             role={message.role}
                             content={message.content}
                             timestamp={message.timestamp}
+                            avatarUrl={message.role === 'assistant' ? avatarUrl : null}
                         />
                     ))}
 

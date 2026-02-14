@@ -134,7 +134,7 @@ function SessionHistory({ user, accessToken }) {
             {/* Session List */}
             {loading ? (
                 <div className="glass-panel p-12 text-center text-white/40">
-                    Loading sessions...
+                    Loading chats...
                 </div>
             ) : filteredSessions.length > 0 ? (
                 <div className="space-y-3">
@@ -212,15 +212,16 @@ function SessionHistory({ user, accessToken }) {
             ) : (
                 <div className="glass-panel p-12 text-center">
                     <Calendar size={48} className="mx-auto text-white/20 mb-4" strokeWidth={1.5} />
-                    <h4 className="text-lg font-semibold text-white mb-2">No sessions found</h4>
+                    <h4 className="text-lg font-semibold text-white mb-2">No chats found</h4>
                     <p className="text-white/40">
                         {searchTerm || filterMood !== 'all'
                             ? 'Try adjusting your filters'
-                            : 'Start your first therapy session to begin your journey'}
+                            : 'Start your first friendly chat to begin your journey'}
                     </p>
                 </div>
-            )}
-        </div>
+            )
+            }
+        </div >
     );
 }
 

@@ -28,7 +28,7 @@ function EndSessionModal({ isOpen, onClose, onConfirm, mood, setMood }) {
                         <div className="inline-flex items-center justify-center w-16 h-16 mb-4 bg-white/5 rounded-2xl border border-white/10">
                             <Heart size={32} className="text-white" strokeWidth={1.5} />
                         </div>
-                        <h2 className="text-2xl font-semibold text-white mb-2">Session Complete</h2>
+                        <h2 className="text-2xl font-semibold text-white mb-2">Chat Complete</h2>
                         <p className="text-white/60 text-sm">How are you feeling right now?</p>
                     </div>
 
@@ -49,7 +49,7 @@ function EndSessionModal({ isOpen, onClose, onConfirm, mood, setMood }) {
                             disabled={!mood}
                             className="btn-primary w-full py-3 text-black font-medium"
                         >
-                            End Session
+                            End Chat
                         </button>
                         <button
                             onClick={onClose}

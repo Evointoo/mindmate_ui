@@ -69,7 +69,7 @@ function Dashboard({ user, accessToken }) {
                         <div className="flex-1">
                             <h2 className="text-3xl font-semibold text-white mb-2">Ready to talk?</h2>
                             <p className="text-white/60 mb-6 leading-relaxed">
-                                Connect with our AI therapist for CBT-guided support in a safe, private space.
+                                Chat with a caring AI friend for thoughtful support in a safe, private space.
                             </p>
 
                             <button
@@ -77,7 +77,7 @@ function Dashboard({ user, accessToken }) {
                                 className="btn-primary flex items-center gap-3"
                             >
                                 <Mic size={20} strokeWidth={1.5} />
-                                <span>Start Therapy Session</span>
+                                <span>Talk to a Friend</span>
                             </button>
 
                             <div className="flex items-center gap-6 mt-6 text-sm text-white/40">
@@ -161,7 +161,7 @@ function Dashboard({ user, accessToken }) {
                             </div>
                             <div>
                                 <h3 className="text-3xl font-bold text-white">{sessions.length}</h3>
-                                <p className="text-sm text-white/40">Total Sessions</p>
+                                <p className="text-sm text-white/40">Total Chats</p>
                             </div>
                         </div>
                     </motion.div>
@@ -213,7 +213,7 @@ function Dashboard({ user, accessToken }) {
                     transition={{ delay: 0.4 }}
                 >
                     <div className="flex items-center justify-between">
-                        <h3 className="text-xl font-semibold text-white">Recent Sessions</h3>
+                        <h3 className="text-xl font-semibold text-white">Recent Chats</h3>
                         {sessions.length > 0 && (
                             <span className="text-sm text-white/40">
                                 Showing {indexOfFirstSession + 1}-{Math.min(indexOfLastSession, sessions.length)} of {sessions.length}
@@ -223,7 +223,7 @@ function Dashboard({ user, accessToken }) {
 
                     {loading ? (
                         <div className="text-center py-12 glass-panel">
-                            <p className="text-white/40">Loading sessions...</p>
+                            <p className="text-white/40">Loading chats...</p>
                         </div>
                     ) : sessions.length > 0 ? (
                         <>
@@ -302,13 +302,13 @@ function Dashboard({ user, accessToken }) {
                     ) : (
                         <div className="text-center py-12 glass-panel">
                             <Mic size={48} className="mx-auto text-white/20 mb-4" strokeWidth={1.5} />
-                            <h4 className="text-lg font-semibold text-white mb-2">No sessions yet</h4>
-                            <p className="text-white/40 mb-6">Start your first therapy session to begin your journey</p>
+                            <h4 className="text-lg font-semibold text-white mb-2">No chats yet</h4>
+                            <p className="text-white/40 mb-6">Start your first friendly chat to begin your journey</p>
                             <button
                                 onClick={() => setShowModeSelection(true)}
                                 className="btn-primary"
                             >
-                                Start Session
+                                Start Chatting
                             </button>
                         </div>
                     )}

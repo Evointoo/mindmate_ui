@@ -3,8 +3,8 @@ import { Mic, MessageSquare, X } from 'lucide-react';
 import PropTypes from 'prop-types';
 
 /**
- * ModeSelectionModal - Choose between Voice and Chat therapy modes
- * Displays before session starts to let user select interaction method
+ * ModeSelectionModal - Choose between Voice and Chat modes
+ * Displays before chat starts to let user select interaction method
  */
 const ModeSelectionModal = ({ isOpen, onSelectMode, onClose }) => {
     const handleModeSelect = (mode) => {
@@ -79,7 +79,7 @@ const ModeSelectionModal = ({ isOpen, onSelectMode, onClose }) => {
                                 {/* Description */}
                                 <p className="text-white/80 text-sm leading-relaxed mb-4 font-medium">
                                     Speak freely and naturally. I'll listen and respond with voice,
-                                    creating a conversational therapy experience.
+                                    creating a natural, friendly conversation.
                                 </p>
 
                                 {/* Features */}
@@ -155,7 +155,7 @@ const ModeSelectionModal = ({ isOpen, onSelectMode, onClose }) => {
                         {/* Footer hint */}
                         <div className="mt-6 text-center">
                             <p className="text-white/40 text-xs">
-                                You can choose a different mode for each session
+                                You can choose a different mode for each chat
                             </p>
                         </div>
                     </motion.div>
