@@ -14,9 +14,6 @@ import {
 } from '../components';
 import './VoiceTherapySession.css';
 
-// API definition
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
-
 function VoiceTherapySession({ user, accessToken, onEndSession }) {
     // Session state
     const [sessionId, setSessionId] = useState(null);
@@ -53,8 +50,8 @@ function VoiceTherapySession({ user, accessToken, onEndSession }) {
                 // Fetch AI voice
                 const aiResponse = await personalAIAPI.getProfile(user.id);
                 setAiVoice(aiResponse.data.voice_model);
-                if (aiResponse.data.avatar_image) {
-                    setAvatarUrl(`/avatars/${aiResponse.data.avatar_image}`);
+                if (aiResponse.data.avatar_url) {
+                    setAvatarUrl(aiResponse.data.avatar_url);
                 }
                 console.log('AI Voice loaded:', aiResponse.data.voice_model);
 
@@ -279,7 +276,7 @@ function VoiceTherapySession({ user, accessToken, onEndSession }) {
                     speaker: aiVoice,
                     model: 'bulbul:v3',
                     pace: 1.0,
-                    speech_sample_rate: 8000,
+                    speech_sample_rate: 2400,
                     output_audio_codec: 'mp3', // MP3 for streaming
                     enable_preprocessing: false
                 })
@@ -491,7 +488,7 @@ function VoiceTherapySession({ user, accessToken, onEndSession }) {
                         <div className="w-48 h-48 rounded-full overflow-hidden border-4 border-white/10 relative z-10 shadow-2xl bg-black-secondary">
                             {avatarUrl ? (
                                 <img
-                                    src={avatarUrl}
+                                    src={avatarUrl.startsWith('http') ? avatarUrl : avatarUrl}
                                     alt="MindMate"
                                     className="w-full h-full object-cover"
                                 />
@@ -577,7 +574,7 @@ function VoiceTherapySession({ user, accessToken, onEndSession }) {
                                         role={message.role}
                                         content={message.content}
                                         timestamp={message.timestamp}
-                                        avatarUrl={message.role === 'assistant' ? avatarUrl : null}
+                                        avatarUrl={avatarUrl}
                                     />
                                 ))}
                                 <div ref={transcriptEndRef} />

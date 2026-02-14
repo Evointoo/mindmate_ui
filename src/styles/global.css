@@ -175,6 +175,13 @@
     border-color: rgba(34, 197, 94, 0.5);
   }
 
+  /* Fix for Select Dropdowns - Essential for visibility */
+  select.input-glass option, 
+  select option {
+    background-color: #121212 !important; 
+    color: white !important;
+  }
+
   /* Focus Ring */
   .focus-ring {
     @apply focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-black-primary;

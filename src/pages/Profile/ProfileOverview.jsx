@@ -33,8 +33,8 @@ function ProfileOverview({ user, accessToken }) {
             if (response.data.actual_name) {
                 setUserName(response.data.actual_name);
             }
-            if (response.data.avatar_image) {
-                setAvatarUrl(`/avatars/${response.data.avatar_image}`);
+            if (response.data.avatar_url) {
+                setAvatarUrl(response.data.avatar_url);
             }
         } catch (error) {
             console.error('Failed to fetch user profile:', error);
@@ -76,18 +76,8 @@ function ProfileOverview({ user, accessToken }) {
         <div className="space-y-6">
             {/* User Info */}
             <div className="flex items-center gap-6 mb-8">
-                <div className="w-24 h-24 rounded-full bg-black-secondary flex items-center justify-center border-4 border-white/10 shadow-[0_0_30px_rgba(34,197,94,0.3)] overflow-hidden">
-                    {avatarUrl ? (
-                        <img
-                            src={avatarUrl}
-                            alt="Profile"
-                            className="w-full h-full object-cover"
-                        />
-                    ) : (
-                        <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-green-neon to-blue-500 text-3xl font-bold text-black">
-                            {user.name ? user.name[0] : user.email[0].toUpperCase()}
-                        </div>
-                    )}
+                <div className="w-24 h-24 rounded-full bg-gradient-to-br from-green-neon to-blue-500 flex items-center justify-center text-3xl font-bold text-black border-4 border-white/10 shadow-[0_0_30px_rgba(34,197,94,0.3)]">
+                    {user.name ? user.name[0] : user.email[0].toUpperCase()}
                 </div>
                 <div>
                     <h2 className="text-2xl font-bold text-white">{userName || user.name || user.email.split('@')[0]}</h2>
