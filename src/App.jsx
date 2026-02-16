@@ -14,6 +14,7 @@ import SessionDetail from './pages/SessionDetail';
 import MoodAnalytics from './pages/MoodAnalytics';
 import GroundingExercises from './pages/GroundingExercises';
 import Layout from './components/Layout';
+import { profileAPI } from './utils/api';
 import './styles/global.css';
 
 function App() {
@@ -70,6 +71,56 @@ function App() {
     );
 }
 
+/**
+ * Determines the correct onboarding route by checking backend status.
+ * Flow: Sign Up → Profile Setup → Personality Test → Create AI → Dashboard
+ */
+function OnboardingRedirect({ user }) {
+    const navigate = useNavigate();
+    const [checking, setChecking] = useState(true);
+
+    useEffect(() => {
+        const checkOnboardingStatus = async () => {
+            try {
+                const response = await profileAPI.getStatus(user.id);
+                const status = response.data;
+
+                if (!status.profile_completed) {
+                    navigate('/profile-setup', { replace: true });
+                } else if (!status.personality_analyzed) {
+                    navigate('/personality-analysis', { replace: true });
+                } else if (!status.ai_created) {
+                    navigate('/create-ai', { replace: true });
+                } else {
+                    navigate('/dashboard', { replace: true });
+                }
+            } catch (err) {
+                console.error('Failed to check onboarding status:', err);
+                // Fallback: use profile_completed from user object
+                if (user.profile_completed) {
+                    navigate('/dashboard', { replace: true });
+                } else {
+                    navigate('/profile-setup', { replace: true });
+                }
+            } finally {
+                setChecking(false);
+            }
+        };
+
+        checkOnboardingStatus();
+    }, [user, navigate]);
+
+    if (checking) {
+        return (
+            <div className="min-h-screen bg-black-primary flex items-center justify-center">
+                <div className="text-white/40">Loading...</div>
+            </div>
+        );
+    }
+
+    return null;
+}
+
 function AppRoutes({ user, accessToken, handleLoginSuccess, handleLogout }) {
     const navigate = useNavigate();
 
@@ -77,17 +128,12 @@ function AppRoutes({ user, accessToken, handleLoginSuccess, handleLogout }) {
 
     return (
         <Routes>
-            {/* Public Route - Login */}
+            {/* Public Route - Login / Onboarding Redirect */}
             <Route
                 path="/"
                 element={
                     user ? (
-                        // Check if profile is completed
-                        user.profile_completed === false ? (
-                            <Navigate to="/profile-setup" replace />
-                        ) : (
-                            <Navigate to="/dashboard" replace />
-                        )
+                        <OnboardingRedirect user={user} />
                     ) : (
                         <LoginPage onLoginSuccess={handleLoginSuccess} />
                     )

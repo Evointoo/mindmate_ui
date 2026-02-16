@@ -52,7 +52,7 @@ function CreateAI({ user }) {
                     target_language_code: 'en-IN',
                     speaker: voice,
                     pace: 1.0,
-                    speech_sample_rate: 22050,
+                    speech_sample_rate: 16000,
                     enable_preprocessing: true,
                     model: 'bulbul:v3'
                 })

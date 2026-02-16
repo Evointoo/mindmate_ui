@@ -276,7 +276,7 @@ function VoiceTherapySession({ user, accessToken, onEndSession }) {
                     speaker: aiVoice,
                     model: 'bulbul:v3',
                     pace: 1.0,
-                    speech_sample_rate: 2400,
+                    speech_sample_rate: 16000,
                     output_audio_codec: 'mp3', // MP3 for streaming
                     enable_preprocessing: false
                 })
